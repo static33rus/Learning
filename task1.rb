@@ -47,8 +47,8 @@ def translate_sys10_toAnotherSys(num,sys)
     end
 end
 
-new_sys=translate_sys10_toAnotherSys(i.to_i,a.to_i)
-#sys10=translate_to_sys10(i,a)
+sys10=translate_to_sys10(i,a)
+new_sys=translate_sys10_toAnotherSys(sys10,b.to_i)
 puts new_sys
         
 
