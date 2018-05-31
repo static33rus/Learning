@@ -12,5 +12,5 @@ end
 sec, min = get_norm_date(sum,60)
 min, hours = get_norm_date(min,60)
 #hours, days = get_norm_date(hours,24)
-puts "#{hours.to_s} час #{min.to_s} минут #{min.to_s} секунд"
+puts "#{hours.to_s} час #{min.to_s} минут #{sec.to_s} секунд"
 
