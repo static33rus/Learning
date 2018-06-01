@@ -1,4 +1,6 @@
+require 'unicode'
 day, month, year = ARGV
+month=Unicode::downcase(month)
 def define_god(year)
 #Функция определения високосного года, возвращает true если високосный
     if (year%4==0 and year%100!=0) or (year%400==0)
@@ -30,4 +32,4 @@ end
 elsif day.to_i<=days_list[month_number]
 noviy_god_cherez=sum-day.to_i
 end
-puts noviy_god_cherez+1
+puts noviy_god_cherez
