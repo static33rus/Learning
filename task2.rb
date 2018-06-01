@@ -32,4 +32,4 @@ end
 elsif day.to_i<=days_list[month_number]
 noviy_god_cherez=sum-day.to_i
 end
-puts noviy_god_cherez
+puts noviy_god_cherez+1
