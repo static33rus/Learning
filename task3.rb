@@ -31,7 +31,7 @@ end
 
 
 if hours==0 and min==0 and sec==0
-puts ''
+puts '0 секунд'
 elsif hours==0 and min==0 and sec!=0
 puts "#{sec.to_s} #{seconds_list[lsec]}"
 elsif hours==0 and min!=0 and sec==0
