@@ -1,6 +1,4 @@
-require 'unicode'
 day, month, year = ARGV
-month=Unicode::downcase(month)
 month_list=[" ","января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"]
 #Определяем номер месяца
 month_number=month_list.index(month)
