@@ -1,0 +1,54 @@
+#!/bin/bash
+
+source "${QNS_DIR}"/lib/setup.sh && set_up_test_case
+
+qns node-ip 10 192.168.10.2/24 192.168.10.1
+qns node-ip 20 192.168.20.2/24 192.168.20.1
+qns node-ip 21 192.168.20.3/24 192.168.20.1
+qns container-run 21 hub.rdp.ru/system-dnsmasq
+
+qns container-exec 21 dnsmasq \
+                        --host-record=carey,carey.mahoney.ru,192.168.10.2 \
+                        --host-record=moses.hightower.ru,192.168.20.2 \
+                        --host-record=tackleberry,192.168.20.3
+
+qns node-exec 10 ping -c 2 -i 0.2 -W 1 192.168.20.2
+qns node-exec 10 ping -c 2 -i 0.2 -W 1 192.168.20.3
+qns node-exec 10 ping -c 2 -i 0.2 -W 1 192.168.10.1
+qns node-exec 20 ping -c 2 -i 0.2 -W 1 192.168.20.1
+qns node-exec 21 ping -c 2 -i 0.2 -W 1 192.168.20.1
+
+qns say "en" --expect "#"
+
+qns say "ping
+
+192.168.20.3
+
+1
+
+
+
+
+" --expect "icmp_seq=1"
+
+qns say "ping
+
+tackleberry
+
+1
+
+
+
+
+" --expect "icmp_seq=1"
+
+qns say "ping
+
+moses
+
+1
+
+
+
+
+" --expect "icmp_seq=1"

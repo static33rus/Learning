@@ -1,0 +1,28 @@
+user=user1 {
+        default service = permit
+        login = des "xxxxxxxxx" 
+        service = exec { 
+                priv-lvl = 15 
+        }
+        member=level15
+}
+
+group=level15 {
+  cmd=enable { permit .* }
+  cmd=configure { permit terminal }
+#  cmd=cli { permit terminal }
+  cmd=radius-server { permit .* }
+  cmd=vlan { permit .* }
+  cmd=interface { permit .* }
+  cmd=ip { permit .* }
+  cmd=router { permit .* }
+  cmd=network { permit .* }
+  cmd=eapol { permit .* }
+  cmd=show { permit .* }
+  cmd=copy { permit .* }
+  cmd=reload { permit .* }
+  cmd=end { permit .* }
+  cmd=exit { permit .* }
+  cmd=logout { permit .* }
+  cmd=* { permit .* }
+}

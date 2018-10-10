@@ -1,0 +1,9 @@
+###Отослать 65K пакетов
+icmp=(Ether(src=RandMAC(),dst=RandMAC())/IP(src="1.2.*.*",dst="8.8.8.8")/ICMP())
+sendp(icmp, iface="tap0")
+
+###Отослать 1024 пакета
+>>> icmp=(Ether(src=RandMAC(),dst=RandMAC())/IP(src="1.2.0.0/22",dst="8.8.8.8")/ICMP())
+>>> sendp(icmp, iface="tap0")
+
+

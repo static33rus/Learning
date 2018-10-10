@@ -1,0 +1,168 @@
+ешила написать небольшой пост о автоматическом сохранение конфигурационных файлов cisco.
+
+Зачем сохранять конфигурацию? Примеров много — может сгореть железка — ее вы можете поменять без проблем, а бэкапа конфигурационного файла нету — придется настраивать с нуля. Хорошо, если у вас хорошая память (и вы помните все настройки) или у вас все полностью описано система. Но что, если конфигурационный файл занимает тысячи строк?
+Или к примеру один из сотрудников случайно почистит файл конфигурации или удалит. Возможно преднамеренно…
+Можно хранить конфигурацию не во flash — а на внешнем носителе или удаленном сервере — но потерять конфигурацию можно и в этом случае. Бэкап конфигурации делать нужно обязательно — и на постоянной основе. 
+
+Я опишу, как можно автоматизировать данный процесс.
+
+
+В начале, требуется поднять TFTP сервер (так же можно использовать FTP либо другой способ, я сохраняю в конфигурации по локальной сети в отдельном менеджмент VLAN — поэтому использую TFTP без аутентификации). 
+Под TFTP-сервер возможно использовать как Linux — так и Windows сервера, у меня для этих целей есть сервер с ОС Windows 2012. Под него нужно скачать TFTP сервер — я для этих целей использую бесплатную tftpd32 service edition, она устанавливается и подымается как сервис в системе. Запускаем программу, указываем ей папку, в которой будет сохранятся конфигурационный файлы, указываем какой IP она будет использовать и проверяем доступность TFTP-сервера с маршрутизатора простым копированием файла с внутреннего flash:
+
+RT-01#copy flash: tftp:
+Source filename []? 3.txt
+Address or name of remote host []? 192.168.10.24
+Destination filename [3.txt]? 
+!!!
+11335 bytes copied in 0.044 secs (257614 bytes/sec)
+RT-01#
+
+
+У меня во внутренней памяти маршрутизатора лежал файл «3.txt» — и я его успешно скопировал на TFTP-сервер.
+
+Способ первый. Создание задания kron.
+
+
+1) Создание скрипта-политики для бэкапа:
+
+Router(config)#kron policy-list (имя)
+Router(config-kron-policy)#cli copy (откуда копировать) (куда копировать)
+Router(config-kron-policy)#exit
+
+где следующие параметры:
+
+сli — определение EXEC CLI команды в задании политики.
+policy-list — определение политики, которая будет ассоциироваться с заданием в инструкции.
+
+Пример:
+
+RT-01(config)#kron policy-list conf_to_tftp
+RT-01(config-kron-policy)#cli copy system:/running-config tftp://192.168.10.24/rt-01.txt
+
+
+2) Создается инструкция для устройств c временем и интервалом выполнения задания:
+
+Router(config)#kron occurrence (name) at (hh:mm) (day/month/oneshot/reccuring)
+Router(config-kron-occurrence)#policy-list (имя)
+
+Пример:
+
+RT-01(config)#kron occurrence daily at 4:00 recurring
+RT-01(config-kron-occurrence)#policy-list conf_to_tftp
+
+
+3) Проверка конфигурации командой show kron.
+
+RT-01#sh kron schedule 
+Kron Occurrence Schedule
+daily inactive, will run again in 0 days 15:04:22 at 4 :00 on
+
+
+Способ второй. Создание архивирования.
+
+Архивирование появилось в устройствах с версии 12.3 — поэтому, возможно придется обновлять iOS. В данный момент для многих устройств уже используются iOS от версии 15.x и выше. Соответственно на старых устройствах данный функционал не поддерживается.
+Посмотрим параметры данной команды:
+
+RT-01(config)#archive 
+RT-01(config-archive)#?
+Archive configuration commands:
+default Set a command to its defaults
+exit Exit from archive configuration mode
+log Logging commands
+maximum maximum number of backup copies
+no Negate a command or set its defaults
+path path for backups
+rollback Rollback parameters
+time-period Period of time in minutes to automatically archive the running-config
+write-memory Enable automatic backup generation during write memory
+
+
+опишу каждый параметр:
+
+log — настройка логирования;
+maximum — максимальное количество резервных копий конфигурации (по умолчанию 10);
+path — путь, который указывает где хранятся резервные копии. При задании имени файла можно использовать переменные $H — имя устройства, и $T — текущее время;
+time-period — период времени через который будет автоматически выполняться архивирование текущей конфигурации (в мин), если выставить значение 1440 (24 часа), то сохраняться будет каждые сутки и при сохранении конфигурации устройства;
+write-memory — включает автоматическую генерацию резервной копии конфигурации, после выполнения сохранения конфигурации;
+hidekeys — скрывать пароли при архивации (хотя никто не отменял использование secret вместо password).
+
+посмотрим возможные пути для сохранения архивов:
+
+RT-01(config-archive)#path?
+
+flash0: Write archive on flash0: file system
+flash1: Write archive on flash1: file system
+flash: Write archive on flash: file system
+ftp: Write archive on ftp: file system
+http: Write archive on http: file system
+https: Write archive on https: file system
+rcp: Write archive on rcp: file system
+scp: Write archive on scp: file system
+tftp: Write archive on tftp: file system
+
+
+Команда так же позволяет сохранять конфигурацию в различные места.
+
+Настройка сохранения на TFTP будет выглядеть следующим образом:
+
+RT-01(config)#archive
+log config
+logging enable
+logging persistent reload
+hidekeys
+path tftp://192.168.10.24/$H-$T
+write-memory
+
+
+Теперь при каждом выполнении команды сохранения конфига на устройстве создастся файл на удаленном tftp сервере.
+Проверяем работоспособность, сохраняем конфигурацию:
+
+RT-01#wr
+Building configuration…
+[OK]!
+
+
+И смотрим сохраненные архивы:
+RT-01#sh archive 
+The maximum archive configurations allowed is 10.
+The next archive file will be named tftp://192.168.10.24/RT-01-Mar--5-13-17-00.303.txt-1
+Archive # Name
+1 tftp://192.168.10.24/RT-01-Mar--5-13-16-56.343.txt-0 < — Most Recent
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10
+
+
+Видно что создан один архив.
+У команды еще одна полезная фича — сравнение архивов.
+Сделаем (сохранив конфигурацию) еще один архив и проверим их различия командой:
+
+Router# sh archive config differences (name1) (name2)
+
+Пример:
+
+RT-01#sh archive config differences tftp://192.168.10.24/RT-01-Mar--5-13-16-56.343.txt-0 tftp://192.168.10.24/RT-01-Mar--5-13-20-30.647.txt-1
+Loading RT-01-Mar--5-13-16-56.343.txt-0 from 192.168.10.24 (via Port-channel1):!
+[OK — 6663 bytes]
+
+Loading RT-01-Mar--5-13-20-30.647.txt-1 from 192.168.10.24 (via Port-channel1):!
+[OK — 6663 bytes]
+!Contextual Config Diffs:
+!No changes were found
+
+
+Различий нет — архивы одинаковы.
+
+Так же есть существует способ восстановления предыдущей версии архива командой:
+
+RT-01(config)#configure replace tftp://192.168.10.24/RT-01-Mar--5-13-20-30.647.txt-1
+
+
+Второй способ удобнее, так как позволяет сделать бэкап при каждом сохранение конфигурации — а значит и возможность откатиться к последней (даже десяти последним) конфигурациям, но его минус — не поддерживается старыми iOS. Для меня данная проблема не актуальна — так как я использую archive.

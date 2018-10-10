@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)https://www.lanbilling.ru/lanbilling-cisco-isg -->
+<html class="js"><head profile="http://www.w3.org/1999/xhtml/vocab"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="https://www.lanbilling.ru/sites/all/themes/astrum/favicon.ico" type="image/vnd.microsoft.icon">
+<meta name="description" content="Пример внедрения LANBilling для предоставления услуги доступа в интернет на базе модели IPoE и технологии Cisco ISG">
+<meta name="abstract" content="Пример внедрения LANBilling для предоставления услуги доступа в интернет на базе модели IPoE и технологии Cisco ISG">
+<meta name="keywords" content="биллинг для проваайдера, биллинговая система, billing, Cisco ISG, IPoE, интеграция биллинга">
+<meta name="robots" content="follow, index">
+<meta name="generator" content="Drupal 7 (http://drupal.org)">
+<link rel="canonical" href="https://www.lanbilling.ru/lanbilling-cisco-isg">
+<link rel="shortlink" href="https://www.lanbilling.ru/node/82">
+    
+    
+    <title>Интеграция биллинга с Cisco ISG | АСР LANBilling - сертифицированный биллинг (billing)</title>
+   
+    
+    <style type="text/css" media="all">
+@import url("https://www.lanbilling.ru/modules/system/system.base.css?p5gv9g");
+</style>
+<style type="text/css" media="all">
+@import url("https://www.lanbilling.ru/modules/field/theme/field.css?p5gv9g");
+@import url("https://www.lanbilling.ru/modules/node/node.css?p5gv9g");
+@import url("https://www.lanbilling.ru/modules/search/search.css?p5gv9g");
+@import url("https://www.lanbilling.ru/modules/user/user.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/modules/views/css/views.css?p5gv9g");
+</style>
+<style type="text/css" media="all">
+@import url("https://www.lanbilling.ru/sites/all/libraries/colorbox/example5/colorbox.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/modules/ctools/css/ctools.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/modules/panels/css/panels.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/themes/astrum/css/base.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/themes/astrum/css/responsive.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/themes/astrum/css/icons.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/themes/astrum/css/style.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/themes/astrum/css/astrum.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/themes/astrum/css/lanbilling.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/themes/astrum/images/color/astrum_color_cache/colors.css?p5gv9g");
+@import url("https://www.lanbilling.ru/sites/all/libraries/superfish/css/superfish.css?p5gv9g");
+</style>
+              <style type="text/css">
+        body{background: url('/sites/all/themes/astrum/images/bg/retina_dust.png') scroll 0 0 repeat;}
+      </style>
+        <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+    
+  <link type="text/css" rel="stylesheet" href="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/style.css"></head>
+  
+
+ 
+	
+  <body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-82 node-type-page i18n-ru boxed" style="padding-top: 86px;">
+    <div id="skip-link">
+      <a href="https://www.lanbilling.ru/lanbilling-cisco-isg#main-content" class="element-invisible element-focusable">Перейти к основному содержанию</a>
+    </div>
+        
+<!-- Header
+================================================== -->
+<header id="header" style="position: fixed; margin-top: -86px; height: 70px; overflow: visible;" class="compact">
+
+  <!-- Container -->
+  <div class="container">
+
+    <!-- Logo / Mobile Menu -->
+    <div class="three columns">
+
+      <div id="mobile-navigation">
+
+                  <form method="POST" id="menu-search" action="https://www.lanbilling.ru/search">
+            <input name="keys" id="keys" type="text" placeholder="Start Typing...">
+          </form>
+
+          <span class="search-trigger"><i class="icon-search"></i></span>
+                <a href="https://www.lanbilling.ru/lanbilling-cisco-isg#menu" class="menu-trigger"><i class="icon-reorder"></i></a>
+      </div>
+
+      <div id="logo" style="margin-top: 23px;">
+        
+                            <div align="right">
+              <div class="region region-logo">
+    <div id="block-logo-block-logo" class="block block-logo-block">
+
+    
+  <div class="content">
+    <a href="https://www.lanbilling.ru/" title="АСР LANBilling - сертифицированный биллинг (billing)"><img src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/logo.png" alt="АСР LANBilling - сертифицированный биллинг (billing)" title="АСР LANBilling - сертифицированный биллинг (billing)"></a>  </div>
+</div>
+  </div>
+            </div>
+                <div class="clearfix"></div>
+      </div>
+    </div>
+
+
+    <!-- Navigation
+    ================================================== -->
+    <div class="thirteen columns">
+              <nav id="navigation" class="menu">
+            <div class="region region-main-menu">
+    <div id="block-superfish-1" class="block block-superfish">
+
+    
+  <div class="content">
+    <ul id="superfish-1" class="menu sf-menu sf-main-menu sf-horizontal sf-style-none sf-total-items-6 sf-parent-items-3 sf-single-items-3 superfish-processed sf-js-enabled"><li id="menu-597-1" class="first odd sf-item-1 sf-depth-1 sf-total-children-7 sf-parent-children-0 sf-single-children-7 menuparent"><a href="https://www.lanbilling.ru/lanbilling" id="lanbilling_products" rel="nofollow" class="sf-depth-1 menuparent sf-with-ul" style="padding-top: 26px; padding-bottom: 23px; margin: 0px;">Продукты<span class="sf-sub-indicator"> »</span></a><ul style="float: none; width: 11em;" class="sf-hidden"><li id="menu-426-1" class="first odd sf-item-1 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/lanbilling" title="Сертифицированный биллинг - &quot;АСР LANBilling 2.0&quot;" class="sf-depth-2" style="float: none; width: auto;">АСР LANBilling 2.0</a></li><li id="menu-401-1" class="middle even sf-item-2 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/portfolio/lanbilling-supervise-server" title="Управление независимыми  установками биллинга" class="sf-depth-2" style="float: none; width: auto;">LANBilling Supervise Server</a></li><li id="menu-402-1" class="middle odd sf-item-3 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/portfolio/lanbilling-cloud" title="Облачная платформа LANBilling  по SaaS модели" class="sf-depth-2" style="float: none; width: auto;">LANBilling Cloud</a></li><li id="menu-410-1" class="middle even sf-item-4 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/portfolio/lanbilling-satisfy-crm" title="Универсальная платформа HelpDesk" class="sf-depth-2" style="float: none; width: auto;">Satisfy CRM</a></li><li id="menu-409-1" class="middle odd sf-item-5 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/portfolio/lbview" title="Многофункциональный IPTV комплекс, интегрированный с биллингом - АСР LANBilling." class="sf-depth-2" style="float: none; width: auto;">LANBilling View</a></li><li id="menu-400-1" class="middle even sf-item-6 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/wifi" title="Wifi по паспорту. Биллинг, тарификация, управление соединениями." class="sf-depth-2" style="float: none; width: auto;">WiFi по паспорту</a></li><li id="menu-1383-1" class="last odd sf-item-7 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://trackme.lanbilling.ru/" class="sf-depth-2" style="float: none; width: auto;">TrackMe</a></li></ul></li><li id="menu-598-1" class="middle even sf-item-2 sf-depth-1 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="https://www.lanbilling.ru/support" title="Услуги по сопровождению биллинговой системы." id="lanbilling_services" class="sf-depth-1 menuparent sf-with-ul" style="padding-top: 26px; padding-bottom: 23px; margin: 0px;">Услуги<span class="sf-sub-indicator"> »</span></a><ul style="float: none; width: 11em;" class="sf-hidden"><li id="menu-390-1" class="first odd sf-item-1 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/support" title="Техническая поддержка биллинга." class="sf-depth-2" style="float: none; width: auto;">Поддержка</a></li><li id="menu-411-1" class="middle even sf-item-2 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/learning" title="Курс обучения &quot;Настройка и эксплуатация АСР LANBilling&quot;" class="sf-depth-2" style="float: none; width: auto;">Обучение</a></li><li id="menu-356-1" class="middle odd sf-item-3 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/modification" title="Доработка биллинговой системы." class="sf-depth-2" style="float: none; width: auto;">Доработка</a></li><li id="menu-355-1" class="last even sf-item-4 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/implementation" title="Узнайте, как правильно проводить работы по внедрению АСР LANBilling" class="sf-depth-2" style="float: none; width: auto;">Внедрение</a></li></ul></li><li id="menu-405-1" class="middle odd sf-item-3 sf-depth-1 sf-no-children"><a href="https://www.lanbilling.ru/buy" title="Расчет стоимости биллинга." class="sf-depth-1" style="padding-top: 26px; padding-bottom: 23px; margin: 0px;">Купить</a></li><li id="menu-389-1" class="middle even sf-item-4 sf-depth-1 sf-total-children-9 sf-parent-children-0 sf-single-children-9 menuparent"><a href="https://www.lanbilling.ru/about" title="Курс обучения по основному функционалу биллинга." class="sf-depth-1 menuparent sf-with-ul" style="padding-top: 26px; padding-bottom: 23px; margin: 0px;">О нас<span class="sf-sub-indicator"> »</span></a><ul style="float: none; width: 11em;" class="sf-hidden"><li id="menu-1688-1" class="first odd sf-item-1 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/vacancies" class="sf-depth-2" style="float: none; width: auto;">Вакансии</a></li><li id="menu-682-1" class="middle even sf-item-2 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/about" class="sf-depth-2" style="float: none; width: auto;">О компании</a></li><li id="menu-415-1" class="middle odd sf-item-3 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/certificates" title="Биллинг. Сертификаты и лицензии." class="sf-depth-2" style="float: none; width: auto;">Сертификаты</a></li><li id="menu-1374-1" class="middle even sf-item-4 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/partners" class="sf-depth-2" style="float: none; width: auto;">Партнеры</a></li><li id="menu-427-1" class="middle odd sf-item-5 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/articles" title="Публикации в прессе о биллинге - АСР LANBilling." class="sf-depth-2" style="float: none; width: auto;">Наши публикации</a></li><li id="menu-414-1" class="middle even sf-item-6 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/press" title="Публикации в открытых источниках" class="sf-depth-2" style="float: none; width: auto;">Пресса о нас</a></li><li id="menu-412-1" class="middle odd sf-item-7 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/letters" title="Отзывы наших клиентов о работе биллинговой системы." class="sf-depth-2" style="float: none; width: auto;">Отзывы клиентов</a></li><li id="menu-594-1" class="middle even sf-item-8 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://www.lanbilling.ru/contacts" title="Контакты, схема проезда" class="sf-depth-2" style="float: none; width: auto;">Контакты</a></li><li id="menu-907-1" class="last odd sf-item-9 sf-depth-2 sf-no-children" style="white-space: normal; float: left; width: 100%;"><a href="https://forum.lanbilling.ru/" title="Форум биллинга - АСР LANBilling." class="sf-depth-2" style="float: none; width: auto;">Форум</a></li></ul></li><li id="menu-596-1" class="middle odd sf-item-5 sf-depth-1 sf-no-children"><a href="https://www.lanbilling.ru/company-news" title="Новости разработки биллинговой системы." class="sf-depth-1" style="padding-top: 26px; padding-bottom: 23px; margin: 0px;">Новости</a></li><li id="menu-354-1" class="last even sf-item-6 sf-depth-1 sf-no-children"><a href="https://www.lanbilling.ru/portfolio" title="Закажите обратный звонок!" id="lanbilling_callback" class="callme_viewform sf-depth-1" style="padding-top: 26px; padding-bottom: 23px; margin: 0px;">.</a></li><li class="search-container"><div id="search-form" style="margin-top: 18px;"><form action="https://www.lanbilling.ru/?q=search" method="POST"><input type="text" name="keys" class="search-text-box"></form></div></li></ul>  </div>
+</div>
+  </div>
+        </nav>
+          </div>
+
+  </div>
+  <!-- Container / End -->
+
+</header>
+<!-- Header / End -->
+
+
+<!-- Content Wrapper / Start -->
+<div id="content-wrapper">
+
+
+  
+                      <section id="titlebar">
+          <!-- Container -->
+          <div class="container">
+
+            <div class="ten columns">
+              <h1 style="color:white;">Интеграция LANBilling c CISCO ISG (IPoE)</h1>
+            </div>
+
+          </div>
+          <!-- Container / End -->
+        </section>
+            
+  
+  <div id="content-container" class="container">
+
+    
+    <!-- Page Content -->
+    <div class="sixteen columns">
+      <section class="page-content">
+                <a id="main-content"></a>
+                        <div class="tabs"></div>                          <div class="region region-content">
+    <div id="block-system-main" class="block block-system">
+
+    
+  <div class="content">
+    <article id="node-82" class="node node-page node-page post">
+      <section class="content-section">
+    
+   
+    <header class="meta">
+                        
+          </header>
+    
+
+    <div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even"><p><strong>1.</strong> <a href="https://www.lanbilling.ru/lanbilling-cisco-isg#1">Введение;</a><br>
+	<strong>2.</strong> <a href="https://www.lanbilling.ru/lanbilling-cisco-isg#2">Общий принцип функционирования;</a><br>
+	<strong>3.</strong> <a href="https://www.lanbilling.ru/lanbilling-cisco-isg#3">Настройка DHCP-сервера;</a><br>
+	<strong>4.</strong> <a href="https://www.lanbilling.ru/lanbilling-cisco-isg#4">Настройка биллинга;</a><br>
+	<strong>5.</strong> <a href="https://www.lanbilling.ru/lanbilling-cisco-isg#5">Настройка агента;</a><br>
+	<strong>6.</strong> <a href="https://www.lanbilling.ru/lanbilling-cisco-isg#6">Настройка тарифов и сервисов;</a><br>
+	<strong>7.</strong> <a href="https://www.lanbilling.ru/lanbilling-cisco-isg#7">Настройка CoA;</a><br>
+	<strong>8.</strong> <a href="https://www.lanbilling.ru/lanbilling-cisco-isg#8">Настройка сервера доступа.</a></p>
+<hr>
+<p><em>Компания «Сетевые Решения» благодарит <strong>Холодилова Александра Олеговича</strong>, руководителя службы эксплуатации СПД (сети передачи данных) компании «Радист» (торговая марка ТВИНТЕЛ) за предоставленный материал статьи. Статья носит ознакомительный характер и не является документацией. Начиная с версии 005, АСР LANBilling 2.0 будет иметь свой встроенный DHCP сервер.</em></p>
+<hr>
+<p><a name="1" style="margin-top: -150px; position: absolute;"></a></p>
+<h2 class="page_subsection">1. Введение</h2>
+<p>В данной статье приведен пример внедрения LANBilling для предоставления услуги доступа в интернет на базе модели IPoE и технологии Cisco ISG с идентификацией клиента по порту доступа. Данная статья не претендует на абсолютную верность, т.к. схема работы до сих пор дорабатывается. Но, тем не менее, общая концепция взаимодействия LB и ISG остается неизменной, и, надеюсь, поможет начинающим пользователям в процессе внедрения.</p>
+<hr>
+<p><a name="2" style="margin-top: -150px; position: absolute;"></a></p>
+<h2 class="page_subsection">2. Общий принцип функционирования</h2>
+<p><img alt="lanbilling" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/lanbilling-cisco-isg-01.png" style="margin: auto; max-width: 100%;"></p>
+<p style="text-align: center;">Рисунок 1</p>
+<p><strong>1.</strong> Абонент при подключении к сети запрашивает адрес от DHCP-сервера.</p>
+<p><strong>2.</strong> Коммутатор доступа вставляет в DHCP-Request опцию 82, которая состоит из двух субопций – Remote-ID (идентификатор устройства, вставившего опцию, как правило, MAC-адрес или IP коммутатора) и Circuit-ID(номер модуля и номер порта на модуле, в который подключен клиент). Если не порту доступа обнаруживается DHCP-сервер, то ответы от него подавляются.</p>
+<p><strong>3.</strong> Далее broadcast-пакет попадает на коммутатор агрегации с настроенной функцией DHCP-Relay, откуда уже unicast-пакет пересылается на внешний DHCP-сервер. На коммутаторе агрегации делается запись в таблице DHCP-Snooping, на основе которой работает функция Dynamic ARP Inspection. Эта функция позволяет динамически создавать связку MAC+IP на основе данных DHCP-Snooping и отбрасывать трафик от клиентов, не получивших адрес от DHCP. Таким образом, уже на уровне агрегации получается верифицированный IP, по которому можно однозначно идентифицировать клиента.</p>
+<p><strong>4.</strong> Далее трафик попадает в ядро сети, откуда перенаправляется в BRAS c поддержкой функционала Cisco ISG.</p>
+<p><strong>5.</strong> На BRAS к трафику применяются политики ограничения согласно данным, полученным из биллинга. В случае, если сессия аутентифицирована, трафик заворачивается в NAT, иначе пользователю показывается страничка с информацией о блокировке.</p>
+<p>В этой схеме биллинг занимается только аутентификацией и авторизацией пользователей, адресным пространством же занимается внешний DHCP-сервер, никак не связанный с биллингом.</p>
+<p>Таким образом, для реализации описанной выше схемы нужно следующее:</p>
+<ul class="list-1" style="margin-bottom: 15px; margin-left: 15px;">
+	<li>
+		Коммутаторы доступа с функцией DHCP-Snooping.</li>
+	<li>
+		Коммутаторы агрегации с функционалом L3 и поддержкой DHCP-Snooping, DHCP-Relay и Dynamic ARP Inspection/IP Source Guard.</li>
+	<li>
+		Функционал DHCP-Relay, DAI, IP Source Guard может быть вынесен на коммутаторы доступа, однако желательно все- таки оставить эти функции на коммутаторах агрегации.</li>
+	<li>
+		На коммутаторах доступа и агрегации порты, направленные в сторону DHCP-сервера должны быть сделаны доверенными для того, чтобы ответы от DHCP-сервера пропускались коммутатором. Соответственно порты, направленные в сторону абонентов должны быть недоверенными для того, чтобы исключить появление неавторизованных DHCP-серверов.</li>
+	<li>
+		DHCP-Snooping на коммутаторе агрегации не должен переписывать значение опции 82, вставленную коммутаторами доступа на недоверенных портах.</li>
+	<li>
+		BRAS с поддержкой Cisco ISG (Cisco 7200/Cisco ASR10xx/Cisco ESR), настроенный на инициализацию сессии при прохождении трафика. Сервер DHCP с поддержкой опции 82 (к примеру, DHCPD).</li>
+</ul>
+<p>Далее опишем процесс настройки DHCP-сервера, агента RADIUS и BRAS.</p>
+<hr>
+<p><a name="3" style="margin-top: -150px; position: absolute;"></a></p>
+<h2 class="page_subsection">3. Настройка DHCP-сервера</h2>
+<p>В качестве DHCP-сервера используется ISC DHCPD версии 4.1.1-P1-15+ из стандартных репозиториев Debian Squeeze. К достоинствам DHCPD стоит отнести низкие требования к ресурсам – сервер, обслуживающий примерно 50-70 запросов в секунду, при размере конфига в 600 кб потребляет 11 мб памяти менее 0,1% ЦП.</p>
+<p>Примерная конфигурация:</p>
+<pre>ddns-update-stylenone;
+default-lease-time 600;
+max-lease-time 600;
+log-facility local7;
+authoritative;
+
+if exists agent.circuit-id
+{
+log (info, concat(
+"Leased address ", binary-to-ascii (10, 8, ".", leased-address),
+" for MAC ", binary-to-ascii(16, 8, "", substring(hardware, 1, 6)),
+" at switch ", binary-to-ascii (16, 8, "", suffix( option agent.remote-id, 6)),
+" on port ", binary-to-ascii (10, 8, "", suffix( option agent.circuit-id, 1)) ,
+" invlan ", binary-to-ascii(10, 16, "", substring(option agent.circuit-id, 2, 2))));
+}
+
+subnet 10.0.0.0 netmask 255.0.0.0 {
+
+class "0:e:5e:13:d8:e7-1"{
+match if (binary-to-ascii (10, 8, "", suffix( option agent.circuit-id, 1)) = "1")
+# and (binary-to-ascii (10, 16, "", substring ( option agent.circuit-id, 2,2)) = "vlanid");
+and (binary-to-ascii (16, 8, ":", suffix ( option agent.remote-id, 6)) = "0:e:5e:13:d8:e7");
+}
+
+pool {
+allow members of "0:e:5e:13:d8:e7-1";
+range 10.21.255.225;
+option subnet-mask 255.255.255.244;
+option routers 10.21.255.254;
+}
+}
+</pre>
+<p>Из примера видно, что для связки MAC коммутатора + номер порта выделяется отдельный класс, к которому привязывается пул из одного адреса со своим набором опции. Функция «suffix» берет последние 6 байт из поля RemoteID при вычленении MAC-адреса коммутатора доступа и 1 байт при вычленении номера порта. Затем эти значения конвертируются из бинарного вида в ASCII функцией «binary-to-ascii» и сравниваются с условиями. Если условие соответствия выполняется, то выдается адрес из привязанного пула.</p>
+<p>Хотя конфиг DHCPD и кажется несколько громоздким, тем не менее, его генерация очень легко автоматизируется. Сгенерированный конфиг же меняется только в случае замены коммутатора. Таже DHCPD позволяет включать в конфиг произвольные текстовые файлы при помощи функции include, что позволяет структурировать конфиг.</p>
+<p>В нашем случае при установке нового коммутатора под него выделяется подсеть и на основе шаблона создается конфигурационный файл, в котором заранее описываются все порты устройства. Далее конфиг коммутатораподключается к общему конфигу DHCPD через include.</p>
+<p>В дальнейших планах у нас интеграция DHCPD и LBInventory с целью автоматизации генерации конфига DHCP-сервера. В дальнейшем абоненту выделяется порт и его адрес остается неизменным.</p>
+<p>Более подробно настройка и работа DHCP-Snooping описана здесь:</p>
+<p><a href="http://xgu.ru/wiki/DHCP_snooping" target="_blank">http://xgu.ru/wiki/DHCP_snooping</a>;<br>
+	<a href="http://xgu.ru/wiki/%D0%9E%D0%BF%D1%86%D0%B8%D1%8F_82_DHCP" target="_blank">http://xgu.ru/wiki/%D0%9E%D0%BF%D1%86%D0%B8%D1%8F_82_DHCP</a></p>
+<hr>
+<p><a name="4" style="margin-top: -150px; position: absolute;"></a></p>
+<h2 class="page_subsection">4. Настройка биллинга</h2>
+<p>При создании учетной записи в качестве логина указывается IP-адрес абонента, привязанный к порту коммутатора. Именно по sourceip и производится дальнейшая идентификация пользователей.</p>
+<hr>
+<p><a name="5" style="margin-top: -150px; position: absolute;"></a></p>
+<h2 class="page_subsection">5. Настройка агента</h2>
+<p>Для организации взаимодействия биллинга с ISG BRAS необходимо запустить агент RADIUS с некоторыми изменениями в настройках. В частности, необходимо запретить отдачу атрибута Framed-IP-Address в Access-Accept, т.к. выдачей адресов занимается внешний DHCP-сервер.</p>
+<p>Также необходимо установить таймаут зависшей сессии небольшим (60 секунд). Необходимо это для тех случаев, когда сессия по какой-то причине не завершается корректно. Если BRAS попробует заново аутентифицировать сессию до истечения таймаута, то биллинг ответит ему отказом т.к. будет считать ее работающей.</p>
+<p>Скриншот настроек агента приведен ниже.</p>
+<p><img alt="lanbilling" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/lanbilling-cisco-isg-02.png" style="margin: auto; max-width: 100%;"></p>
+<p style="text-align: center;">Рисунок 2</p>
+<hr>
+<p><a name="6" style="margin-top: -150px; position: absolute;"></a></p>
+<h2 class="page_subsection">6. Настройка тарифов и сервисов</h2>
+<p>Помимо аутентификации сессии, к ней обычно требуется применить политику авторизации. Обычно на сессию применяется набор сервисов. Сервис классифицирует трафик по определенному ACL и указывает, что делать с трафиком.</p>
+<p>Сервисы могут храниться как на BRAS, так и загружаться на BRAS через специально сформированный <em>access-accept</em>. Данные способы можно комбинировать.</p>
+<p>Хранение сервисов в биллинге позволяет при изменении тарифов не трогать BRAS, однако механизм хранения сервисов в биллинге при большом количестве тарифов выглядит несколько громоздким.</p>
+<p>Хранение сервисов на сервере доступа позволяет представить конфигурацию в более структурированном и наглядном виде, однако при любом изменении тарифов требуется вмешательство в конфигурацию BRAS.</p>
+<p>Как правило, используется комбинированный подход и описание непосредственно тарифов хранится в биллинге, а вспомогательные сервисы (редирект, доверенные сайты и т.д.) описываются на BRAS т.к. изменяются нечасто.</p>
+<p>Для того чтобы BRAS загрузил сервисы, их имена передаются через Cisco AVPair ssg-account-info c префиксом N для задания имени сервиса, который надо загрузить и префиксом A для активации сервиса на сессии (NInet3072 и AInet3072 соответственно). Атрибуты описания и активации сессии включаются в <em>access-accept</em> от RADIUS-сервера.</p>
+<p>Загрузка сервисов производится методом посылки access-request со стороны BRAS, где в поле User-Name указывается имя сервиса, который надо получить. LANBilling позволяет ответить <em>access-accept</em> на эти запросы в случае, если в тарифе указан идентификатор внешней услуги, совпадающий с набором атрибутов, привязанных к сервису.</p>
+<p>В нашем случае настройка биллинга сильно упрощается тем фактом, что нам не требуется разделять трафик на отдельные классы и соответственно применять к ним разные политики, а достаточно просто применить целиком к сессии атрибут полисера и аккаунтинг-листа.</p>
+<p>Для этого в тарифе укажем требуемую скорость, а к ней привяжем следующий атрибут:</p>
+<table class="standard-table">
+	<tbody>
+		<tr>
+			<td style="border-top-color: rgb(228, 228, 228); border-top-width: 1px; border-top-style: solid;">
+				250</td>
+			<td style="border-top-color: rgb(228, 228, 228); border-top-width: 1px; border-top-style: solid;">
+				account-info</td>
+			<td style="border-top-color: rgb(228, 228, 228); border-top-width: 1px; border-top-style: solid;">
+				QU;cir, normal burst, excess burst;D;cir,normal burst;exess burst</td>
+		</tr>
+	</tbody>
+</table>
+<p>Здесь QU – скорость от абонента к BRAS, DU – от BRAS к абоненту.</p>
+<p><strong><em>Пример для 8 Мбит:</em></strong></p>
+<p><img alt="lanbilling" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/lanbilling-cisco-isg-03.png" style="margin: auto; max-width: 100%;"></p>
+<p style="text-align: center;">Рисунок 3</p>
+<p>Для аккаунтинга применим на сессию следующий атрибут:</p>
+<p><img alt="lanbilling" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/lanbilling-cisco-isg-04.png" style="margin: auto; max-width: 100%;"></p>
+<p style="text-align: center;">Рисунок 4</p>
+<p>Также можно использовать атрибут 251, имеющий похожие опции.</p>
+<p>Подробно RADIUS-интерфейс ISG описан на <a href="http://www.cisco.com/en/US/docs/ios/12_2sb/isg/coa/guide/isg_ig.html" target="_blank">http://www.cisco.com/en/US/docs/ios/12_2sb/isg/coa/guide/isg_ig.html</a>.</p>
+<hr>
+<p><a name="7" style="margin-top: -150px; position: absolute;"></a></p>
+<h2 class="page_subsection">7. Настройка CoA</h2>
+<p>Для взаимодействия с BRAS со стороны биллинга применятся RADIUS CoA. Для этого используется механизм внешних скриптов агента RADIUS и утилита radclient.</p>
+<p>По событию блокировки, разблокировки, включения и выключения выполняется один и тот же скрипт, который уничтожает сессию.</p>
+<p>Т.к. при использовании модели IPoE нет тоннеля, как в случае с L2TP/PPPoE, где создается PPP-соединение поверх L3/L2, то пользователь постоянно подключен к сети вне зависимости от состояния сессии. Поэтому в нашем случае достаточно просто уничтожить сессию и авторизовать ее заново, но уже с новыми параметрами. Динамическая замена сервисов на сессии не требуется. При этом данный процесс практически не заметен для пользователя (теряется 1-2 пакета пока сессия авторизовывается).</p>
+<p>Код скрипта для деавторизации приведен ниже:</p>
+<pre>nas_id=10.254.241.12
+nas_port=1700
+nas_secret=хххххх
+sess_id="$1"
+/bin/echo "User-Name="$1", Cisco-Account-Info=S"$1", cisco-avpair=\"subscriber:command=account-logoff\"" | /usr/bin/radclient -x "$nas_id":"$nas_port" coa "$nas_secret"
+</pre>
+<p>В переменной <em>$1</em> передается логин пользователя, т.е. его IP-адрес. Стоит заметить, что при остановке сессии агент передает логин, т.е. идентификатор сессии вторым параметром. Соответственно это надо учесть в скрипте.</p>
+<hr>
+<p><a name="8" style="margin-top: -150px; position: absolute;"></a></p>
+<h2 class="page_subsection">8. Настройка сервера доступа</h2>
+<p>IPoE BRAS реализован на базе маршрутизатора Cisco 7206 NPE-G1.</p>
+<p>Стоит заметить, что функционал ISG реализован в ветке IOS 12.2SB. Дальнейшей эволюцией этой ветки является IOS 12.2SRC. В нашем случае используется IOS 12.3(4r)T3.</p>
+<p>Далее приведен конфиг BRAS с комментариями.Части, не относящиеся к настройке ISG удалены.</p>
+<pre>aaa new-model
+!
+<span style="color: rgb(255, 0, 0);">!Создаем две группы AAA - для авторизации администраторов через TACACS и для авторизации сессий через RADIUS.</span>
+!
+aaa group server tacacs+ tac-int
+server 10.201.0.4
+!
+aaa group server radius ISG-RADIUS
+server 10.254.241.1 auth-port 1812 acct-port 1813
+!
+<span style="color: rgb(255, 0, 0);">!Указываем, что для логина группы admin используется группа tac-int</span>
+!
+aaa authentication login admin group tac-int local
+<span style="color: rgb(255, 0, 0);">!Соответвенно для авторизации группы ISG-AUTH-1 используется AAA-группа ISG-RADIUS</span>
+aaa authentication login ISG-AUTH-1 group ISG-RADIUS
+<span style="color: rgb(255, 0, 0);">!Указываем, что надо авторизовывать пользователей, подключающихся через консоль.</span>
+aaa authorization console
+<span style="color: rgb(255, 0, 0);">!Далее указываем, что переход в enable и вводимые команды авторизовываются через TACACS</span>
+aaa authorization exec admin group tac-int local
+aaa authorization commands 15 admin group tac-int local
+<span style="color: rgb(255, 0, 0);">!Сетевые соединения авторизовываем через группу ISG-RADIUS</span>
+aaa authorization network ISG-AUTH-1 group ISG-RADIUS
+<span style="color: rgb(255, 0, 0);">!Сервисы пытаемся искать локально, иначе загружаем через RADIUS</span>
+aaa authorization subscriber-service default local group ISG-RADIUS
+<span style="color: rgb(255, 0, 0);">!Аккаунтинг сливаем раз в минуту</span>
+aaa accounting update newinfo periodic 1
+<span style="color: rgb(255, 0, 0);">!Аккаунтинг сливаем в группу ISG-RADIUS</span>
+aaa accounting network ISG-AUTH-1
+action-type start-stop
+group ISG-RADIUS
+!
+aaa accounting network ISG-RADIUS
+action-type start-stop
+group ISG-RADIUS
+!
+<span style="color: rgb(255, 0, 0);">!Указываем сервер, которому позволено посылать CoA на BRAS</span>
+aaa server radius dynamic-author
+client 10.254.241.1 server-key 7 xxxxxx
+auth-type any
+!
+<span style="color: rgb(255, 0, 0);">!Описываем куда перенаправлять трафик блокированных клиентов</span>
+!
+service-policy type control ISG-CUSTOMERS-POLICY
+redirect server-group REDIRECT_NOPAY
+serverip 10.20.1.1 port 80
+!
+<span style="color: rgb(255, 0, 0);">!Описываем классы для трафика.</span>
+<span style="color: rgb(255, 0, 0);">!CLASS-TRUSTED - разрешенные при блокировке сайты, к примеру, интернет-банки или платежные системы.</span>
+<span style="color: rgb(255, 0, 0);">!CLASS-TO-REDIRECT - трафик, который перенаправляется на страничку переадресации</span>
+<span style="color: rgb(255, 0, 0);">!ISG-IP-UNAUTH - неаутентифицированный трафик, обратите внимание на таймер.</span>
+!
+class-map type traffic match-any CLASS-TRUSTED
+match access-group input 198
+match access-group output 198
+!
+class-map type traffic match-any CLASS-TO-REDIRECT
+match access-group input 197
+match access-group output 197
+!
+class-map type control match-all ISG-IP-UNAUTH
+matchauthen-status unauthenticated
+match timer UNAUTH-TIMER
+!
+<span style="color: rgb(255, 0, 0);">!Описываем, что делать с трафиком для блокированных клиентов</span>
+<span style="color: rgb(255, 0, 0);">!Класс CLASS-TO-REDIRECT перенаправляем, остальной трафик не пропускаем</span>
+!
+policy-map type service LOCAL_L4R
+1 class type traffic CLASS-TO-REDIRECT
+redirect to group REDIRECT_NOPAY
+!
+class type traffic default input
+drop
+!
+!
+<span style="color: rgb(255, 0, 0);">!Указываем, что делать с трафиком на доверенные сайты - ограничиваем его на 64к. Остальной трафик не пропускаем.</span>
+<span style="color: rgb(255, 0, 0);">!Остальной трафик не пропускаем.</span>
+!
+policy-maptypeservice SERVICE-TRUSTED
+1 class type traffic CLASS-TRUSTED
+police input 64000 8000 16000
+police output 64000 8000 16000
+!
+class type traffic default input
+drop
+!
+<span style="color: rgb(255, 0, 0);">!Описываем главную политику для трафика</span>
+<span style="color: rgb(255, 0, 0);">!Неавторизованные сессии дропаем по таймеру через 3 минуты</span>
+<span style="color: rgb(255, 0, 0);">!При инициализации сессии выполняем авторизацию сессии через группу ISG-IP-UNAUTH</span>
+<span style="color: rgb(255, 0, 0);">!Идентифицируем сессию по ip-адресу</span>
+<span style="color: rgb(255, 0, 0);">!Если авторизация не прошла (радиус ответил access-reject), устанавливаем таймер на 3 минуты</span>
+<span style="color: rgb(255, 0, 0);">!На неавторизованную сессию вешаем сервисы SERVICE-TRUSTED и LOCAL_L4R.</span>
+<span style="color: rgb(255, 0, 0);">!Важен порядок навешивания сервисов т.к. первый должен разрешать доверенные сайты,</span>
+<span style="color: rgb(255, 0, 0);">!второй - перенаправлять веб-трафик на страницу блокировки,</span>
+<span style="color: rgb(255, 0, 0);">!остальной трафик дропаем</span>
+!policy-map type control ISG-CUSTOMERS-POLICY
+class type control ISG-IP-UNAUTH event timed-policy-expiry
+1 service disconnect
+!
+class type control always event session-start
+10 authorize aaa list ISG-AUTH-1 password ISG identifier source-ip-address
+20 set-timer UNAUTH-TIMER 3
+30 service-policy type service name SERVICE-TRUSTED
+40 service-policy type service name LOCAL_L4R
+!
+class type control always event radius-timeout
+1 service-policy type service name SERVICE-TRUSTED
+2 service-policy type service name LOCAL_L4R
+!
+<span style="color: rgb(255, 0, 0);">!Интерфейс в сторону RADIUS</span>
+interface GigabitEthernet0/2.10
+encapsulation dot1Q 10
+ip address 10.254.241.12 255.255.248.0
+!
+<span style="color: rgb(255, 0, 0);">!Интерфейс в сторону NAT</span>
+interface GigabitEthernet0/2.11
+encapsulation dot1Q 11
+ip address 10.252.0.2 255.255.240.0
+!
+<span style="color: rgb(255, 0, 0);">!Интерфейс в сторону страницы блокировки</span>
+interface GigabitEthernet0/2.17
+descriptionRedirect_iface
+encapsulation dot1Q 17
+ip address 10.20.1.62 255.255.255.192
+!
+<span style="color: rgb(255, 0, 0);">!Интерфейс, на который принимается трафик от абонентов.</span>
+<span style="color: rgb(255, 0, 0);">!Навешиваем на него service-policy</span>
+<span style="color: rgb(255, 0, 0);">!Инициируем сессию по факту прохождения трафика</span>
+interface GigabitEthernet0/3.8
+encapsulation dot1Q 8
+ip address 10.20.0.2 255.255.255.0
+service-policy type control ISG-CUSTOMERS-POLICY
+ip subscriber routed
+initiator unclassified ip-address
+!
+<span style="color: rgb(255, 0, 0);">!Заворачиваем маршрут по умолчанию в NAT</span>
+ip route 0.0.0.0 0.0.0.0 10.252.0.1
+!
+<span style="color: rgb(255, 0, 0);">!Описываем ACL для редиректа http</span>
+!
+access-list 197 permit tcp any anyeq www
+access-list 197 permit tcp any eq www any
+access-list 197 deny ip any any
+!
+<span style="color: rgb(255, 0, 0);">!Разрешаем трафик для блокированных клиентов - DNS, ICMP, доверенные сайты</span>
+!
+access-list 198 permit udp any anyeq domain
+access-list 198 permit udp any eq domain any
+access-list 198 permit tcp any host 91.197.107.200 eq www
+access-list 198 permit tcp any host 91.197.107.200 eq 443
+access-list 198 permit tcp any host 109.235.186.253 eq www
+access-list 198 permit icmp any any
+access-list 198 deny ip any any
+!
+<span style="color: rgb(255, 0, 0);">!Указываем, что нужно указывать в access-request атрибуты:</span>
+<span style="color: rgb(255, 0, 0);">!8(Framed-IP-Address )</span>
+<span style="color: rgb(255, 0, 0);">!31(Calling-Station-Id)</span>
+<span style="color: rgb(255, 0, 0);">!32(NAS-Identifier)</span>
+<span style="color: rgb(255, 0, 0);">!44(Acct-Session-Id)</span>
+<span style="color: rgb(255, 0, 0);">!55(Event-Timestamp)</span>
+<span style="color: rgb(255, 0, 0);">!Хотя можно и без них</span>
+radius-server attribute 44 include-in-access-req
+radius-server attribute 44 extend-with-addr
+radius-server attribute 8 include-in-access-req
+radius-server attribute 32 include-in-accounting-req
+radius-server attribute 55 include-in-acct-req
+radius-server attribute 31 mac format unformatted
+radius-server host 10.254.241.1 auth-port 1812 acct-port 1813 key 7 yyyyyyyyyyy
+radius-servervsa send cisco-nas-port
+radius-servervsa send accounting
+radius-servervsa send authentication
+!
+</pre>
+<p>В случае успешной настройки BRAS должны быть сгенерирован access-request и соответствующий access-accept от биллинга. Пример:</p>
+<p><img alt="lanbilling" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/lanbilling-cisco-isg-05.png" style="margin: auto; max-width: 100%;"></p>
+<p style="text-align: center;">Рисунок 5</p>
+<p>Как видно, в качестве <em>User-Name</em> используется <em>Source IP</em>. В ответ приходит <em>access-accept</em> и атрибут с настройками полисинга.</p>
+<p>В итоге должны появиться сессии:</p>
+<p><img alt="lanbilling" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/lanbilling-cisco-isg-06.png" style="margin: auto; max-width: 100%;"></p>
+<p style="text-align: center;">Рисунок 6</p>
+<p>Детали сессии можно посмотреть при помощи команды <strong>show sss session uid xx</strong>.</p>
+<p style="margin: 0px; color: rgb(0, 38, 255);">Руководитель службы эксплуатации СПД (сети передачи данных)<br>
+	Компании «Радист» (торговая марка ТВИНТЕЛ)<br>
+	Холодилов Александр Олегович</p>
+</div></div></div>      </section>
+  <div class="clearfix"></div>
+
+  </article>
+
+
+
+
+  </div>
+</div>
+  </div>
+              </section>
+    </div>
+    <!-- Page Content / End -->
+    
+    <div class="clearfix"></div>
+
+  </div>
+
+  
+
+  
+</div>
+<!-- Content Wrapper / End -->
+
+
+<!-- Footer
+================================================== -->
+<div id="footer" class="dark">
+  <div class="container">
+
+          <div class="four columns">
+          <div class="region region-footer-first">
+    <div id="block-block-1" class="block block-block">
+
+    <h2>О нас</h2>
+  
+  <div class="content">
+    <div class="four columns" style="padding-top:12px;">
+	Компания разработчик<br>
+	программного обеспечения<br>
+	в области телекоммуникаций<br>
+	с 2001 года.<br>
+	<span style="color:#ffffff;">Решения, проверенные временем.</span></div>
+  </div>
+</div>
+  </div>
+      </div>
+    
+          <div class="four columns">
+          <div class="region region-footer-second">
+    <div id="block-block-2" class="block block-block">
+
+    <h2>Москва</h2>
+  
+  <div class="content">
+    <div class="four columns">
+	<ul class="get-in-touch">
+		<li>
+			<p><strong>Адрес:</strong> 105264, г. Москва,<br>
+				ул. 10-я Парковая, д. 18</p>
+		</li>
+		<li>
+			<p><strong>Телефон:</strong>+7 (495) 795-06-77<br>
+				+7 (495) 204-17-72</p>
+		</li>
+		<li>
+			<p><strong>Email:</strong> <a href="mailto: itdep@lanbilling.ru"> itdep@lanbilling.ru</a></p>
+		</li>
+	</ul>
+</div>
+  </div>
+</div>
+  </div>
+      </div>
+    
+          <div class="four columns">
+          <div class="region region-footer-third">
+    <div id="block-block-8" class="block block-block">
+
+    <h2>Ярославль</h2>
+  
+  <div class="content">
+    <div class="four columns">
+	<ul class="get-in-touch">
+		<li>
+			<p><strong>Адрес:</strong> 150054, г. Ярославль,<br>
+				ул. Кудрявцева, д. 9</p>
+		</li>
+		<li>
+			<p><strong>Телефон:</strong>+7 (495) 795-06-77<br>
++7 (495) 204-17-72</p>
+		</li>
+		<li>
+			<p><strong>Email:</strong> <a href="mailto:itdep@lanbilling.ru">itdep@lanbilling.ru</a></p>
+		</li>
+	</ul>
+</div>
+  </div>
+</div>
+  </div>
+      </div>
+    
+
+          <div class="four columns">
+          <div class="region region-footer-fourth">
+    <div id="block-block-11" class="block block-block">
+
+    <h2>Режим работы</h2>
+  
+  <div class="content">
+    <div class="four columns">
+	<ul class="get-in-touch">
+		<li>
+			<i class="icon-wrench"></i>
+			<p><strong>Техническая поддержка:</strong> Круглосуточно. Без выходных</p>
+		</li>
+		<li>
+			<i class="icon-money"></i>
+			<p><strong>Коммерческий отдел:</strong> Понедельник-пятница<br>
+				с 9:оо до 19:оо</p>
+		</li>
+	</ul>
+</div>
+<!-- Yandex.Metrika counter -->
+<script async="" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/analytics.js"></script><script type="text/javascript" async="" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/watch.js"></script><script type="text/javascript">
+(function (d, w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter21146431 = new Ya.Metrika({id:21146431,
+                    webvisor:true,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true});
+        } catch(e) { }
+    });
+
+    var n = d.getElementsByTagName("script")[0],
+        s = d.createElement("script"),
+        f = function () { n.parentNode.insertBefore(s, n); };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f, false);
+    } else { f(); }
+})(document, window, "yandex_metrika_callbacks");
+</script><noscript>&lt;div&gt;&lt;img src="//mc.yandex.ru/watch/21146431" style="position:absolute; left:-9999px;" alt="" /&gt;&lt;/div&gt;</noscript>
+<!-- /Yandex.Metrika counter -->  </div>
+</div>
+  </div>
+      </div>
+    
+
+  </div>
+
+</div>
+<!-- Footer / End -->
+
+<!-- Footer Bottom / Start -->
+<div id="footer-bottom">
+
+  <!-- Container -->
+  <div class="container">
+    <table>
+      <tbody><tr>
+        <td>
+            <div>
+                <div class="region region-footer">
+    <div id="block-block-3" class="block block-block">
+
+    
+  <div class="content">
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46203610-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<div class="eight columns alpha">
+	© Компания «Сетевые решения», 2001-2018. Все права защищены.</div>
+
+<div style="display: inline-block;"><a href="https://www.lanbilling.ru/en"><img src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/en.png"></a></div>
+<div style="display: inline-block;"><a href="https://www.lanbilling.ru/en" style="color: inherit;">English</a></div>
+  </div>
+</div>
+  </div>
+            </div>
+        </td>
+        <td>
+                      </td>
+        <td>
+            <div>
+                <div class="region region-footer-social">
+    <div id="block-block-25" class="block block-block">
+
+    
+  <div class="content">
+    <div class="four columns">
+	<ul class="social-icons-footer">
+		<li>
+			<a href="https://twitter.com/#!/LANBilling" title="Twitter"><i class="icon-twitter"></i></a></li>
+		<li>
+			<a href="https://www.facebook.com/groups/lanbilling/" title="Facebook"><i class="icon-facebook"></i></a></li>
+	</ul>
+</div>  </div>
+</div>
+  </div>
+            </div>
+        </td>
+      </tr>
+    </tbody></table>
+
+  </div>
+
+  <!-- Container / End -->
+
+</div>
+<!-- Footer Bottom / Start -->
+
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.once.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/drupal.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.inputmask.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.bind-first-0.2.3.min.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.inputmask-multi.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/mask.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/ru_l759yt1Ix1_EUaOUNDPtnkfjbkn_arZYIcVfS_86aGI.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.colorbox-min.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/colorbox.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/colorbox_inline.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.flexslider.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.hoverIntent.minified.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/sftouchscreen.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/sfsmallscreen.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/supposition.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/superfish.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/supersubs.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/superfish(1).js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.tp.plugins.min.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.sb.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.easing.min.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.tooltips.min.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/jquery.jpanelmenu.js"></script>
+<script type="text/javascript" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/custom.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"astrum","theme_token":"1nL3VxrvkBBLUMX2kyXUJnejKEbzU9MfJRtfrvyUwg4","js":{"sites\/all\/modules\/jquery_update\/replace\/jquery\/1.7\/jquery.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/modules\/mb_register_form\/jquery.inputmask-1.x\/js\/jquery.inputmask.js":1,"sites\/all\/modules\/mb_register_form\/jquery.bind-first-master\/release\/jquery.bind-first-0.2.3.min.js":1,"sites\/all\/modules\/mb_register_form\/andr-04-inputmask-multi-8d61699\/dev\/jquery.inputmask-multi.js":1,"sites\/all\/modules\/mb_register_form\/mask.js":1,"public:\/\/languages\/ru_l759yt1Ix1_EUaOUNDPtnkfjbkn_arZYIcVfS_86aGI.js":1,"sites\/all\/libraries\/colorbox\/jquery.colorbox-min.js":1,"sites\/all\/modules\/colorbox\/js\/colorbox.js":1,"sites\/all\/modules\/colorbox\/js\/colorbox_inline.js":1,"sites\/all\/modules\/tabvn\/flexslider_format\/jquery.flexslider.js":1,"sites\/all\/libraries\/superfish\/jquery.hoverIntent.minified.js":1,"sites\/all\/libraries\/superfish\/sftouchscreen.js":1,"sites\/all\/libraries\/superfish\/sfsmallscreen.js":1,"sites\/all\/libraries\/superfish\/supposition.js":1,"sites\/all\/libraries\/superfish\/superfish.js":1,"sites\/all\/libraries\/superfish\/supersubs.js":1,"sites\/all\/modules\/superfish\/superfish.js":1,"sites\/all\/themes\/astrum\/scripts\/jquery.tp.plugins.min.js":1,"sites\/all\/themes\/astrum\/scripts\/jquery.sb.js":1,"sites\/all\/themes\/astrum\/scripts\/jquery.easing.min.js":1,"sites\/all\/themes\/astrum\/scripts\/jquery.tooltips.min.js":1,"sites\/all\/themes\/astrum\/scripts\/jquery.magnific-popup.min.js":1,"sites\/all\/themes\/astrum\/scripts\/jquery.jpanelmenu.js":1,"sites\/all\/themes\/astrum\/scripts\/custom.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/libraries\/colorbox\/example5\/colorbox.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/panels\/css\/panels.css":1,"sites\/all\/themes\/astrum\/css\/base.css":1,"sites\/all\/themes\/astrum\/css\/responsive.css":1,"sites\/all\/themes\/astrum\/css\/icons.css":1,"sites\/all\/themes\/astrum\/css\/style.css":1,"sites\/all\/themes\/astrum\/css\/colors\/green.css":1,"sites\/all\/themes\/astrum\/css\/astrum.css":1,"sites\/all\/themes\/astrum\/css\/lanbilling.css":1,"public:\/\/color\/astrum_color_cache\/colors.css":1,"sites\/all\/libraries\/superfish\/css\/superfish.css":1,"sites\/all\/themes\/astrum\/system.messages.css":1,"sites\/all\/themes\/astrum\/system.menus.css":1,"sites\/all\/themes\/astrum\/system.theme.css":1}},"colorbox":{"transition":"elastic","speed":"350","opacity":"0.10","slideshow":false,"slideshowAuto":true,"slideshowSpeed":"2500","slideshowStart":"start slideshow","slideshowStop":"stop slideshow","current":"{current} \u0438\u0437 {total}","previous":"\u00ab \u041f\u0440\u0435\u0434.","next":"\u0421\u043b\u0435\u0434. \u00bb","close":"\u0417\u0430\u043a\u0440\u044b\u0442\u044c","overlayClose":true,"returnFocus":true,"maxWidth":"98%","maxHeight":"98%","initialWidth":"300","initialHeight":"250","fixed":true,"scrolling":true,"mobiledetect":true,"mobiledevicewidth":"480px"},"superfish":{"1":{"id":"1","sf":{"pathLevels":"2","delay":"0","animation":{"opacity":"show","height":"show"},"speed":"\u0027fast\u0027","autoArrows":true,"dropShadows":false,"disableHI":false},"plugins":{"touchscreen":{"mode":"window_width"},"smallscreen":{"mode":"window_width","addSelected":false,"menuClasses":false,"hyperlinkClasses":false,"title":"Main menu"},"supposition":true,"bgiframe":false,"supersubs":{"minWidth":"11","maxWidth":"27","extraWidth":1}}}}});
+//--><!]]>
+</script>
+<script type="text/javascript" charset="utf-8" src="./Интеграция биллинга с Cisco ISG _ АСР LANBilling - сертифицированный биллинг (billing)_files/callme.js"></script>
+  
+
+<!-- Page cached by Boost @ 2018-03-12 16:33:16, expires @ 2018-03-12 17:33:16, lifetime 1 час --><div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button type="button" id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none; max-width: none;"></div></div><div id="callme">
+	<input type="button" id="viewform" class="callme_viewform" style="display: none;">
+</div>
+
+<div class="cme-form" id="cme-form-main">
+	<form class="cme">
+		<a class="cme-cls" href="https://www.lanbilling.ru/callme/">×</a>
+		<h6>Заказать обратный звонок</h6>
+		<div class="cme-fields">
+				<span>Имя </span>
+				<span><input placeholder="Ваше имя" name="Имя " =""="" class="cme-txt" type="text" maxlength="150"></span>
+			
+				<span>Телефон </span>
+				<span><input placeholder="Укажите телефон" name="Телефон " =""="" class="cme-txt" type="text" maxlength="150"></span>
+			
+				<span>Электронная почта </span>
+				<span><input placeholder="Укажите адрес электронной почты" name="Электронная почта " =""="" class="cme-txt" type="text" maxlength="150"></span>
+			
+				<span>Вопрос </span>
+				<span><textarea name="Вопрос " placeholder="Желательно заполнить" =""="" class="cme-txt"></textarea></span>
+			
+				<span class="cme_ct">
+					<div class="cme-ct-text">Время звонка</div>
+					<div class="cme-ct-text">сегодня</div>
+					<div class="cme-ct-start-wrapper"><select class="cme-ct-start"><option value="">~</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option></select></div>
+					<div class="cme-ct-text">до</div>
+					<div class="cme-ct-finish-wrapper"><select class="cme-ct-finish"><option value="">~</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option></select></div>
+					<div class="cme-ct-text">час.</div>
+				</span>
+			</div>
+
+		<span class="cme-btn-place"><span><a target="_blank" href="http://dedushka.org/">Callme</a></span>
+			<button class="cme-btn">Перезвоните мне</button>
+		</span>
+		<span class="cme-ct">Вам ответят в будние дни с 9-оо до 18-оо по Московскому времени.</span>
+		<div class="callme-result"></div>
+		
+	</form>
+</div>
+<div id="cme-back"></div></body><div id="tiptip_holder" style="max-width:200px;"><div id="tiptip_arrow"><div id="tiptip_arrow_inner"></div></div><div id="tiptip_content"></div></div></html>

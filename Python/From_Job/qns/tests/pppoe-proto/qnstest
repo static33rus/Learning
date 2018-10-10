@@ -1,0 +1,46 @@
+#!/usr/bin/python3
+
+import run
+import os
+import time
+from pppoe_proto.configure import *
+
+#
+# Parser options
+#
+
+qns_call('\nqns container-run 20 hub.rdp.ru/freeradius')
+# Main function
+qns_call('\nqns node-exec 10 python3 run.py -s pppoe -i veth0')
+qns_call('\nqns node-exec 10 python3 run.py -s ppp -i veth0')
+time.sleep(1)
+
+#######     Переконфигурим роутер    #####################
+qns_call('\nqns say "enable" --expect "ecorouter#"')
+qns_call('\nqns say "conf t" --expect "ecorouter(config)#"')
+qns_call('\nqns say "pppoe-profile 0" --expect "ecorouter(config-pppoe)#"')
+qns_call('\nqns say "ppp authentication chap pap" --expect "ecorouter(config-pppoe)#"')
+qns_call('\nqns say "exit" --expect "ecorouter(config)#"')
+qns_call('\nqns say "exit" --expect "ecorouter#"')
+qns_call('\nqns say "disable" --expect "ecorouter>"')
+
+#######     Запускаем радиус    #####################
+configure_radius(20,'3.3.3.2')
+
+#######     Настраиваем интерфейс на роутере для связи с радиусом   #####################
+qns_call('\nqns say "enable" --expect "ecorouter#"')
+qns_call('\nqns say "conf t" --expect "ecorouter(config)#"')
+qns_call('\nqns say "interface radius" --expect "ecorouter(config-if)#"')
+qns_call('\nqns say "ip address 3.3.3.1/24" --expect "ecorouter(config-if)#"')
+qns_call('\nqns say "end" --expect "ecorouter#"')
+configure_port('ge1','si1','radius')
+
+#######     Настраиваем роутер под радиус    #####################
+configure_radius_group('rad_group','3.3.3.2')
+configure_sub_aaa('test','rad_group')
+configure_pppoe_profile(0,auth='chap pap',aaa='test')
+
+#######     Пинганем радиус с роутера    #####################
+
+qns_call('\nqns node-exec 10 python3 run.py -s auth -i veth0')
+qns_call('\nqns node-exec 10 python3 run.py -s termination -i veth0')

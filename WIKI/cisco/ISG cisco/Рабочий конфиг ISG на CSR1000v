@@ -1,0 +1,176 @@
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no platform punt-keepalive disable-kernel-core
+platform console serial
+!
+hostname Router
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+aaa new-model
+!
+!
+aaa authorization network IPOE group radius 
+!
+!         
+!
+!
+!
+aaa session-id common
+no process cpu autoprofile hog
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+
+!
+!
+!
+!         
+!
+!
+!
+!
+!
+!
+subscriber templating
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+license udi pid CSR1000V sn 9W7SGJ59V9P
+!
+spanning-tree extend system-id
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+class-map type traffic match-any ANY_TRAFFIC
+ match access-group input name FULL_ACCESS
+ match access-group output name FULL_ACCESS
+!
+policy-map type service Unlim-100k
+ class type traffic ANY_TRAFFIC
+  police input 100000
+  police output 100000
+ !
+!
+policy-map type control IPOE
+ class type control always event session-start
+  10 authorize aaa list IPOE password 12121212 identifier source-ip-address 
+  20 service-policy type service name Unlim-100k
+ !
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+! 
+! 
+! 
+!         
+!
+!
+interface GigabitEthernet1
+ ip address 1.1.1.1 255.255.255.0
+ ip helper-address 2.2.2.2
+ negotiation auto
+ service-policy type control IPOE
+ ip subscriber l2-connected
+  initiator unclassified mac-address ipv4
+  initiator dhcp
+!
+interface GigabitEthernet2
+ ip address 2.2.2.1 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet3
+ ip address 3.3.3.1 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet4
+ no ip address
+ shutdown
+ negotiation auto
+!
+!
+virtual-service csr_mgmt
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+ip tftp source-interface GigabitEthernet2
+!
+ip access-list extended FULL_ACCESS
+ permit ip any any
+!
+!
+!
+!
+!
+radius server test
+ address ipv4 3.3.3.2 auth-port 1812 acct-port 1813
+ key 12121212
+!
+!
+control-plane
+!
+ !
+ !
+ !
+ !
+!
+!
+!
+!
+!
+line con 0
+ stopbits 1
+line vty 1
+ length 0
+line vty 2 4
+!
+!
+end
+

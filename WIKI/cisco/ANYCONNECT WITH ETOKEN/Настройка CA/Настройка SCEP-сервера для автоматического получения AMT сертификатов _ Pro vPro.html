@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<!-- saved from url=(0075)http://vpro.by/nastroyka-scep-servera-dlya-avtomaticheskogo-polucheniya-amt -->
+<html class="js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="description" content="Если у вас возникнет серьёзная потребность в написании собственного ПО для АМТ, вы обязательно столкнётесь с обслуживанием сертификатов - в первую очередь это автоматизация их получения. Потому что, как бы это ни было удобно, использовать Manageability Director для такой цели (именно автоматическое получение) - не получится. Intel SCS во многом решает эту задачу, но, повторюсь, если зайдёт речь именно о своём ПО - код SCS, начиная с версии 8.0, закрыт, кроме того, SCS страшно громоздок и негибок, не говоря уже про нелюбовь к линуксу.">
+<link rel="shortcut icon" href="http://vpro.by/sites/all/themes/vproby/favicon.ico" type="image/vnd.microsoft.icon">
+<meta name="generator" content="Drupal 7 (http://drupal.org)">
+<link rel="shortlink" href="http://vpro.by/node/77">
+<link rel="canonical" href="http://vpro.by/nastroyka-scep-servera-dlya-avtomaticheskogo-polucheniya-amt">
+<link rel="canonical" href="http://vpro.by/nastroyka-scep-servera-dlya-avtomaticheskogo-polucheniya-amt">
+<meta name="viewport" content="width=device-width">
+<title>Настройка SCEP-сервера для автоматического получения AMT сертификатов | Pro vPro</title>
+<link type="text/css" rel="stylesheet" href="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css" media="all">
+<link type="text/css" rel="stylesheet" href="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/css_tyQgvNWyQd4XDB-nx4f6msm5jMh3j-ylW0iUwuUao3w.css" media="all">
+<link type="text/css" rel="stylesheet" href="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/css_yYwUXxtWWMluE7dUhflDQofdQGiKxTBHaZtNvbq9LW8.css" media="all">
+<link type="text/css" rel="stylesheet" href="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/css_VaVMyaDbuJXd-5WkI--CaAEmiDIoQHgctvFMufznqVY.css" media="all">
+<script type="text/javascript" async="" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/ga.js"></script><script type="text/javascript" async="" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/watch.js"></script><script type="text/javascript" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/js_zzcIWOou_jnX0ZWAIA4sb6Xy_p5a8FZNA0GySvuWjPU.js"></script><style type="text/css"></style>
+<script type="text/javascript" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/js_KCd8rbJYUruV1tRJnh4um34UYvyhlrSVCPR1jNko2h8.js"></script>
+<script type="text/javascript" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/js_i-KzOBm9M_NH8frE0Rm6G6PdMM0HuVAvJX8MMmwaOec.js"></script>
+<script type="text/javascript" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/js_iYsPpB3B-cWPXOZpHqdoSUudh3OYEXD053YZrYvXrws.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"vproby","theme_token":"iYigpBGPM-GvGBzG1YllmvUWpewnOut6PqT-tN14iuY","js":{"sites\/all\/modules\/jquery_update\/replace\/jquery\/1.5\/jquery.min.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"misc\/form.js":1,"public:\/\/languages\/ru_WDJQYMozBWt03M5gf0V2Fj0NVw4bb6nii59r92dlAjA.js":1,"misc\/textarea.js":1,"modules\/filter\/filter.js":1,"sites\/all\/themes\/vproby\/js\/custom.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"modules\/comment\/comment.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,"modules\/poll\/poll.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"modules\/filter\/filter.css":1,"sites\/all\/themes\/vproby\/style.css":1}}});
+//--><!]]>
+</script>
+<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+</head>
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-77 node-type-article">
+
+
+
+<!--LiveInternet counter-->
+<script type="text/javascript"><!--
+new Image().src = "http://counter.yadro.ru/hit?r"+
+escape(document.referrer)+((typeof(screen)=="undefined")?"":
+";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+";"+Math.random();//--></script>
+<!--/LiveInternet-->
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function (d, w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter15833455 = new Ya.Metrika({id:15833455, enableAll: true, webvisor:true});
+        } catch(e) {}
+    });
+    
+    var n = d.getElementsByTagName("script")[0],
+        s = d.createElement("script"),
+        f = function () { n.parentNode.insertBefore(s, n); };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f);
+    } else { f(); }
+})(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript>&lt;div&gt;&lt;img src="//mc.yandex.ru/watch/15833455" style="position:absolute; left:-9999px;" alt="" /&gt;&lt;/div&gt;</noscript>
+<!-- /Yandex.Metrika counter -->
+
+
+    
+<div id="wrapper">
+  <header id="header" role="banner">
+    <div id="logo"><a href="http://vpro.by/" title="Главная"><img src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/pro-vpro--logo.jpg"></a></div>    <h1 id="site-title"><a href="http://vpro.by/" title="Главная"></a></h1>
+    <div id="site-description">Intel vPro and Intel AMT</div>
+    <div class="clear"></div>
+    <nav id="main-menu" role="navigation">
+      <a class="nav-toggle" href="http://vpro.by/nastroyka-scep-servera-dlya-avtomaticheskogo-polucheniya-amt#">Navigation</a>
+      <div class="menu-navigation-container">
+        <ul class="menu"><li class="first leaf"><a href="http://vpro.by/">Home</a></li>
+<li class="leaf"><a href="http://vpro.by/intel-management-engine" title="Intel Management Engine">Intel ME</a></li>
+<li class="leaf"><a href="http://vpro.by/intel-amt-chipsets" title="Все чипсеты Intel AMT">Intel AMT chipsets</a></li>
+<li class="leaf"><a href="http://vpro.by/upravlenie-amt-kompyuterom-s-pomoshchyu-manageability-commander" title="Управление AMT-компьютером с помощью Manageability Commander">Manageability Commander</a></li>
+<li class="leaf"><a href="http://vpro.by/kontakty" title="Обо мне">Контакты</a></li>
+<li class="last leaf"><a href="http://vpro.by/tracker" title="Последние обновления на сайте">Последнее</a></li>
+</ul>      </div>
+      <div class="clear"></div>
+    </nav><!-- end main-menu -->
+  </header>
+
+  
+  <div id="container">
+
+      
+  
+   
+    <div class="content-sidebar-wrap">
+
+    <div id="content">
+      <div id="breadcrumbs"><h2 class="element-invisible">Вы здесь</h2><nav class="breadcrumb"><a href="http://vpro.by/">Главная</a> » Настройка SCEP-сервера для автоматического получения AMT сертификатов</nav></div>      <section id="post-content" role="main">
+                                <h1 class="page-title">Настройка SCEP-сервера для автоматического получения AMT сертификатов</h1>                                        <div class="region region-content">
+  <div id="block-system-main" class="block block-system">
+
+      
+  <div class="content">
+                          <span property="dc:title" content="Настройка SCEP-сервера для автоматического получения AMT сертификатов" class="rdf-meta element-hidden"></span><span property="sioc:num_replies" content="0" datatype="xsd:integer" class="rdf-meta element-hidden"></span>  
+              <span class="submitted"><span property="dc:date dc:created" content="2015-02-21T18:41:13+03:00" datatype="xsd:dateTime" rel="sioc:has_creator">Оставлен <a href="http://vpro.by/user/apple_rom" title="Информация о пользователе." class="username" xml:lang="" about="/user/apple_rom" typeof="sioc:UserAccount" property="foaf:name" datatype="">apple_rom</a> Сб, 02/21/2015 - 18:41</span></span>
+      
+    
+  <div class="content node-article">
+    <div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p>
+	Если у вас возникнет серьёзная потребность в написании собственного ПО для АМТ, вы обязательно столкнётесь с обслуживанием сертификатов - в первую очередь это автоматизация их получения. Потому что, как бы это ни было удобно, использовать Manageability Director для такой цели (именно автоматическое получение) - не получится. Intel SCS во многом решает эту задачу, но, повторюсь, если зайдёт речь именно о своём ПО - код SCS, начиная с версии 8.0, закрыт, кроме того, SCS страшно громоздок и негибок, не говоря уже про нелюбовь к линуксу.</p>
+<p>
+	Собственно, такая же задача - "автополучение сертификатов" - стоит среди главных для того же <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5_%D0%BC%D0%BE%D0%B1%D0%B8%D0%BB%D1%8C%D0%BD%D1%8B%D0%BC%D0%B8_%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%B0%D0%BC%D0%B8" target="_blank">MDM</a> и любой другой сферы, связанной с шифрованием посредством "привычных" сертификатов. Если по-простому, то для какого-то устройства, которое нуждается в сертификате, должна быть возможность отправить запрос по http/https&nbsp; и получить в ответ сертификат, выписанный от имени нашего CA.</p>
+<p style="text-align: center;">
+	<img alt="Получение сертификата по SCEP" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-SCEP-cert.png" style="width: 480px; height: 160px;"></p>
+<p>
+	Такую задачу решает SCEP (<strong>S</strong>imple <strong>C</strong>ertificate <strong>E</strong>nrollment <strong>P</strong>rotocol) сервер. В версии от микрософт (MSCEP) она реализуется с помощью NDES (<strong>N</strong>etwork <strong>D</strong>evice <strong>E</strong>nrollment <strong>S</strong>ervice) сервиса. Далее опишу настройку SCEP для выдачи AMT-сертификатов. (При чём не только для TLS-шифрования, но и для инициализации/управления, что пригодится нам после, при рассмотрении работы AMT7+, поддерживающих HostBasedSetup, где как раз такие и требуются).</p>
+<p style="margin-left: 40px;">
+	<em>Как обычно, при настройке MS-сервисов, я не акцентирую внимание на подробностях их работы - это другая тема. Считаю правильным сделать "пошаговую инструкцию", чтобы по картинкам любой мог это же повторить, и останавливаюсь подробней лишь на важных и проблемных моментах.</em></p>
+<p>
+	В "полной" версии MSCEP предполагает наличие отдельного сервера с домен-контроллером, отдельного для СА и отдельного для SCEP (NDES) - итого 3 шт.</p>
+<p style="text-align: center;">
+	<img alt=" " src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/0250.Figure3.png"></p>
+<p>
+	Однако я исхожу из предположения, что ПО предполагает условно "малый бизнес" (Small Business), где количество/стоимость обслуживания виртуалок для этого играет значение, потому опишу настройку всего этого на одной виртуалке.</p>
+<p style="text-align: center;">
+	<img alt="DC+CA+NDES" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-all-in-one.jpg" style="width: 301px; height: 204px;"></p>
+<p>
+	То есть с DC+СА+SCEP в одном флаконе.</p>
+<p style="margin-left: 40px;">
+	<em>В моём случае она поднимается на Amazon EC2, достаточно варианта с 1.7Гб памяти (по опыту нужно от 1Гб, использовать самые "бюджетные" виртуалки с 640Мб крайне не рекомендуется - глюки с получением сертификатов крайне многовероятны).</em></p>
+<p>
+	Поставив домен и СА (см. <a href="http://vpro.by/nastroyka-ca-i-shablonov-tls-sertifikatov-dlya-intel-scs" target="_blank">руководство из прошлой части</a>) приступаем к установке NDES (т.е. собственно, SCEP-сервера).</p>
+<p style="text-align: center;">
+	<img alt="DC+CA" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-DC-CA.png" style="width: 240px; height: 229px;"></p>
+<p>
+	Сначала создадим юзеров (в домене):</p>
+<ul><li>
+		админа SCEP</li>
+	<li>
+		юзера из-под которого будет запускаться сервис SCEP (NDES)</li>
+	<li>
+		Device-админа, который будет иметь права на получение сертификата "со стороны устройства" (по простому - через веб-интерфейс)</li>
+</ul><p style="text-align: center;">
+	<img alt="Add new user" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-new-user.png" style="width: 405px; height: 431px;"></p>
+<p>
+	Я обзываю их SCEPadmin, SCEPservice и DeviceAdmin.</p>
+<p style="text-align: center;">
+	<img alt="New users" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-SCEP-users.png" style="width: 286px; height: 256px;"></p>
+<p>
+	SCEPadmin добавляем в группу "Administrators", SCEPservice в группу "IIS_IUSRS".</p>
+<p style="text-align: center;">
+	<img alt="Add user to group" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-SCEPservice-Add-to-a-group.png" style="width: 207px; height: 87px;"></p>
+<p>
+	Далее добавляем ещё одну роль для CA:</p>
+<p style="text-align: center;">
+	<img alt="Add role to CA" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-CA-Add-Role.png" style="width: 598px; height: 667px;"></p>
+<p>
+	Ставим галку напротив NDES:</p>
+<p style="text-align: center;">
+	<img alt="NDES install" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-NDES-install.png" style="width: 505px; height: 264px;"></p>
+<p>
+	На следующем шаге прописываем нашего пользователя с правами "IIS_IUSRS", из-под которого будет трудиться NDES.</p>
+<p style="text-align: center;">
+	<img alt="NDES install User Account" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-NDES-user-account.png" style="width: 519px; height: 165px;"></p>
+<p>
+	Наличие группы "IIS_IUSRS" у данного юзера (SCEPservice ) принципиально, иначе получите ошибку 0x80070529:</p>
+<p style="text-align: center;">
+	<img alt="NDES install User Account - error 0x80070529" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-NDES-user-account-error-0x80070529.png" style="width: 359px; height: 159px;"></p>
+<p>
+	Тут заполняем, что хотим (не принципиально):</p>
+<p style="text-align: center;">
+	<img alt="NDES install RA Information" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-NDES-RA-information.png" style="width: 536px; height: 322px;"></p>
+<p>
+	На следующей можно ничего не трогать.</p>
+<p style="text-align: center;">
+	<img alt="NDES install Cryptography" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-NDES-Cryptography.png" style="width: 681px; height: 239px;"></p>
+<p>
+	Проверяем и запускаем установку:</p>
+<p style="text-align: center;">
+	<img alt="NDES Confirmation" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-NDES-installing.png" style="width: 615px; height: 389px;"></p>
+<p>
+	После окончания установки, если у вас до этого уже была открыта консоль с шаблонами - её нужно обновить, чтобы отобразились свежедобавленные в результате шаблоны. Для нас важен будет, появившийся после установки NDES - шаблон "<strong>CEP Encryption</strong>".</p>
+<p style="text-align: center;">
+	<img alt="Шаблоны NDES - CEP Encryption" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-NDES-templates.png" style="width: 635px; height: 342px;"></p>
+<p>
+	Добавляем SCEP-админа (SCEPadmin) для "<strong>CEP Encryption</strong>":</p>
+<p style="text-align: center;">
+	<img alt="Шаблоны NDES - добавляем SCEPadmin к CEP Encryption" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-CEP-SCEPadmin.png" style="width: 351px; height: 446px;"></p>
+<p>
+	И даём ему права на "<strong>Enroll</strong>":</p>
+<p style="text-align: center;">
+	<img alt="Шаблоны NDES - SCEPadmin - Enroll" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-CEP-SCEPadmin-Enroll.png" style="width: 352px; height: 317px;"></p>
+<p>
+	Далее аналогично для шаблона "<strong>Exchange Enrollment Agent (Offline request)</strong>" - добавляем "<strong>Enroll</strong>" для SCEPadmin:</p>
+<p style="text-align: center;">
+	<img alt="Шаблоны NDES - SCEPadmin - Enroll - Exchange Enrollment Agent (Offline request)" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-EEA-SCEPadmin-Enroll.png" style="width: 381px; height: 369px;"></p>
+<p>
+	Далее настраиваем админу SCEP права на добавление шаблонов в СА:</p>
+<p style="text-align: center;">
+	<img alt="CA properties" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-CA-properties.png" style="width: 235px; height: 164px;"></p>
+<p>
+	Ставлю все галки в закладке "<strong>Security</strong>":</p>
+<p style="text-align: center;">
+	<img alt="CA properties - Manage CA" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-CA-properties-manageCA.png" style="width: 380px; height: 385px;"></p>
+<p>
+	И, наконец, добавляем SCEP-админа в "Administrators" и "Enterprise Admins":</p>
+<p style="text-align: center;">
+	<img alt="SCEPadmin - Administrators и Enterprise Admins" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-SCEPadmin-Enterprise-Admins.png" style="width: 195px; height: 189px;"></p>
+<p>
+	Настраиваем пользователя, из-под которого запускается NDES, в моём случае это SCEPservice. Ранее мы его уже добавили в группу "IIS_IUSRS". Однако подразумевается именно локальная группа, потому, из-за того, что мы делаем это "прямо на домене" (где "всё в одном" - DC+CA+SCEP), придётся добавить SCEPservice в группу "Administrators".</p>
+<p>
+	Иначе (если&nbsp; не добавить SCEPservice в администраторы) после SCEP-ApplicationPool просто не стартанёт (будем получать ошибку <strong>503</strong> - "<em><strong>Service Unavailable</strong></em>"), т.к. у данного пользователя не будет прав на вход в систему.</p>
+<p style="margin-left: 40px;">
+	<em>The identity of application pool SCEP is invalid. The user name or password that is specified for the identity may be incorrect, or the user may not have batch logon rights.</em></p>
+<p>
+	Далее, ещё SCEPservice нужны права на запрос сертификатов из СА:</p>
+<p style="text-align: center;">
+	<img alt="SCEPservice CA Properties" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-SCEPservice-CA.png" style="width: 373px; height: 383px;"></p>
+<p>
+	Кроме этого ему требуются "<strong>Read</strong>" и "<strong>Enroll</strong>" для шаблона, с помощью которого мы будем отдавать сертификаты. По умолчанию, после установки NDES, это шаблон "<strong>IPSec (Offline request)</strong>". Поэтому мы настроим всё нужное для него, а после сделаем на базе оного шаблон для Intel AMT.</p>
+<p>
+	Итак, для шаблона "<strong>IPSec (Offline request)</strong>" ставим SCEPservice права на "<strong>Read</strong>" и "<strong>Enroll</strong>":</p>
+<p style="text-align: center;">
+	<img alt="SCEPservice - IPSec (Offline request)" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-SCEPservice-IPSec-OR.png" style="width: 354px; height: 440px;"></p>
+<p>
+	Наконец, добавляем SPN для SCEPservice. Для этого выполняем в командной строке:</p>
+<p style="margin-left: 40px;">
+	<span style="font-family:courier new,courier,monospace;">setspn -a SCEPservice/<em><strong>scs</strong>.vpro.by</em> <em><strong>scs</strong></em></span><br>
+	(в вашем случае имя сервиса и домен прописываем своё)</p>
+<p style="text-align: center;">
+	<img alt="SCEPservice setspn" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-SCEPservice-setspn.png" style="width: 643px; height: 128px;"></p>
+<p>
+	Для DeviceAdmin-а, аналогично SCEPservice, добавляем права на "<strong>Enroll</strong>" для "<strong>IPSec (Offline request)</strong>":</p>
+<p style="text-align: center;">
+	<img alt="DeviceAdmin IPSec (Offline request)" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-DeviceAdmin-IPSec-OR.png" style="width: 354px; height: 315px;"></p>
+<p>
+	Настройка аккаунтов закончена, теперь на базе "<strong>IPSec (Offline request)</strong>" сделаем шаблон для Intel AMT.</p>
+<p>
+	&nbsp;</p>
+<p>
+	<strong>Шаблон SCEP для Intel AMT</strong></p>
+<p>
+	Делаем дубликат "<strong>IPSec (Offline request)</strong>":</p>
+<p style="text-align: center;">
+	<img alt="Duplicate IPSec (Offline request)" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-Duplicate-IPSec-Or.png" style="width: 435px; height: 126px;"></p>
+<p>
+	Выбираем <strong>2003</strong>:</p>
+<p style="text-align: center;">
+	<img alt="2003" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-Duplicate-IPSec-Or-2003.png" style="width: 380px; height: 237px;"></p>
+<p>
+	Я обзываю его "AMTinitTLS" - он будет и для инициализации (пригодится для AMT7+) и для TLS.</p>
+<p style="text-align: center;">
+	<img alt="AMTinitTLS" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMTinitTLS.png" style="width: 398px; height: 516px;"></p>
+<p>
+	В названии посоветую не использовать пробелов/подчёркиваний, чтобы после не спутать имя и отображаемое имя шаблона.</p>
+<p>
+	Я минимальный размер ключа с дефолтных <strong>2048</strong> понижаю до <strong>1024</strong> (AMT поддерживает <strong>1024</strong>-<strong>2048</strong>):</p>
+<p style="text-align: center;">
+	<img alt="AMTinitTLS key 1024" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMTinitTLS-key.png" style="width: 397px; height: 514px;"></p>
+<p>
+	Добавляем галку "<strong>Microsoft Strong Cryptographic Provider</strong>":</p>
+<p style="text-align: center;">
+	<img alt="AMTinitTLS CSP - Microsoft Strong Cryptographic Provider" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMTinitTLS-CSP.png" style="width: 364px; height: 414px;"></p>
+<p>
+	Проверяем/ставим "<strong>Supply in the request</strong>" в "<strong>Subject Name</strong>":</p>
+<p style="text-align: center;">
+	<img alt="AMTinitTLS Supply request" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMTinitTLS-Supply-request.png" style="width: 307px; height: 160px;"></p>
+<p>
+	Проверяем/ставим "<strong>Read</strong>" и "<strong>Enroll</strong>" для SCEPservice в закладке "<strong>Security</strong>":</p>
+<p style="text-align: center;">
+	<img alt="AMTinitTLS Security" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMTinitTLS-Security.png" style="width: 388px; height: 381px;"></p>
+<p>
+	Добавляем в "<strong>Extensions</strong>" политики "<strong>Client Authentication</strong>" и "<strong>Server Authentication</strong>":</p>
+<p style="text-align: center;">
+	<img alt="AMTinitTLS Extensions" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMTinitTLS-Extensions.png" style="width: 383px; height: 597px;"></p>
+<p>
+	Вышеописанные шаги для шаблона AMT мы уже делали при настройке TLS-сертификатов для Intel SCS. "<strong>Client Authentication</strong>" и "<strong>Server Authentication</strong>" - это "обычные" политики для SSL-сертификатов. Сейчас же добавим ещё и "необычных", специфичных именно для Intel AMT.</p>
+<p>
+	&nbsp;</p>
+<p>
+	<strong>Настройка OID, специфичных для Intel AMT</strong><br><br>
+	На "<strong>Add Application Policy</strong>" жмём "<strong>New</strong>" и в поле OID вводим <strong>2.16.840.1.113741.1.2.3</strong> (предварительно очистив это поле от того, что там по умолчанию). Это политика, необходимая для инициализации AMT, потому обзываю её, например, "AMT init":</p>
+<p style="text-align: center;">
+	<img alt="AMTinit - 2.16.840.1.113741.1.2.3" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMTinit.png" style="width: 386px; height: 462px;"></p>
+<p>
+	Аналогично повторяем и вводим <strong>2.16.840.1.113741.1.2.1</strong> - требуемая политика для удалённого доступа, называю "AMT remote access":</p>
+<p style="text-align: center;">
+	<img alt="AMT remote access - 2.16.840.1.113741.1.2.1" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMT-remote-access.png" style="width: 160px; height: 159px;"></p>
+<p>
+	И для локального доступа <strong>2.16.840.1.113741.1.2.2</strong> - "AMT local access":</p>
+<p style="text-align: center;">
+	<img alt="AMT local access - 2.16.840.1.113741.1.2.2" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMT-local-access.png" style="width: 157px; height: 151px;"></p>
+<p>
+	В результате получим следующий набор политик:</p>
+<p style="text-align: center;">
+	<img alt="AMT политики" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMT-policies.png" style="width: 337px; height: 378px;"></p>
+<p>
+	Для "красоты" можно удалить политику IPSec - останутся все те, что требуются для работы Intel AMT.</p>
+<p style="text-align: center;">
+	<img alt="AMT политики только" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMT-policies-only.png" style="width: 339px; height: 419px;"></p>
+<p>
+	Применяем все изменения и получаем новый шаблон.</p>
+<p style="text-align: center;">
+	<img alt="Новый шаблон - AMTinitTLS" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMTinitTLS-template.png" style="width: 952px; height: 303px;"></p>
+<p>
+	Добавляем "AMTinitTLS" в шаблоны СА:</p>
+<p style="text-align: center;">
+	<img alt="Добавляем шаблон AMTinitTLSв CA" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-CA-new-cert-temp.png" style="width: 529px; height: 239px;"></p>
+<p>
+	Рестартим СА для публикации новодобавленного шаблона:</p>
+<p style="text-align: center;">
+	<img alt="Рестарт CA" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-CA-restart.png" style="width: 325px; height: 252px;"></p>
+<p>
+	Шаблоны на месте, приступаем к следующей стадии.</p>
+<p>
+	Существует много всяких разных способов защиты от того, чтобы враги не получали наши сертификаты. Для этого много разных навороченных механизмов может быть реализовано, например, предоставление устройством истекающего сертификата в качестве "пароля", взамен ему выдаётся новый. Подобные схемы крайне сложны, для нашего случая (напомню, подразумевается условный Small Business) - настроим простую-понятную схему "с паролем".</p>
+<p>
+	Однако и тут сложности - по дефолту пароль (который проверяется при запросе сертификата) одноразовый, т.е. он меняется после выписывания каждого сертификата. Такие сложности ни к чему, переделаем на постоянный пароль. Для этого придётся лезть в реестр.</p>
+<p>
+	Ищем ветку "<strong>HKEY_LOCAL_MACHINE\Software\Microsoft\Cryptography\MSCEP</strong>":</p>
+<p style="text-align: center;">
+	<img alt="UseSinglePassword 0" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-UseSinglePassword-0.png" style="width: 515px; height: 115px;"></p>
+<p>
+	Меняем на единичку:</p>
+<p style="text-align: center;">
+	<img alt="UseSinglePassword 1" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-UseSinglePassword-1.png" style="width: 240px; height: 179px;"></p>
+<p>
+	Видим, что в реестре стоит дефолтный шаблон - "<strong>IPSECIntermediateOffline</strong>":</p>
+<p style="text-align: center;">
+	<img alt="MSCEP - IPSECIntermediateOffline" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-IPSECIntermediateOffline.png" style="width: 569px; height: 118px;"></p>
+<p>
+	Однако мы добавили в СА и хотим выдавать свой, а не дефолтный, потому меняю его (все три поля) на "AMTinitTLS" (имя шаблона, выше нами сделанного):</p>
+<p style="text-align: center;">
+	<img alt="Реестр - AMTinitTLS" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-AMTinitTLS-reg.png" style="width: 569px; height: 118px;"></p>
+<p>
+	Далее нужно добавить возможность изменять данную ветку реестра пользователю, из-под которого стартует NDES (у меня это SCEPservice).</p>
+<p style="text-align: center;">
+	<img alt="MSCEP permissions" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-MSCEP-permissions.png" style="width: 316px; height: 186px;"></p>
+<p>
+	Для этого даём ему Full Control:</p>
+<p style="text-align: center;">
+	<img alt="MSCEP permissions - Full Control" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-MSCEP-permissions-FullControl.png" style="width: 314px; height: 357px;"></p>
+<p>
+	Ну и последний штрих - настраиваем IIS. Для этого в свойствах "<strong>Application Pool</strong>" - "<strong>SCEP</strong>" жмём "<strong>Advanced Settings</strong>":</p>
+<p style="text-align: center;">
+	<img alt="IIS Application Pool - SCEP - Advanced Settings" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-IIS-Application-Pool-AdvSettings.png" style="width: 595px; height: 540px;"></p>
+<p>
+	Меняем "<strong>Load User Profile</strong>" с дефолтного "<strong>False</strong>" на "<strong>True</strong>":</p>
+<p style="text-align: center;">
+	<img alt="IIS Application Pool - SCEP - Advanced Settings - Load User Profile" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-IIS-Application-Load-User-Profile.png" style="width: 433px; height: 487px;"></p>
+<p>
+	Перезагружаем IIS командой <strong>iisreset</strong> и заходим по адресу <em>http://192.168.0.197<strong>/CertSrv/mscep_admin/</strong></em> (тут, конечно, у каждого свой адрес/IP) и вводим логин-пароль DeviceAdmin-а:</p>
+<p style="text-align: center;">
+	<img alt="DeviceAdmin login" src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-DeviceAdmin.png" style="width: 372px; height: 276px;"></p>
+<p>
+	Наконец, получаем долгожданный результат:</p>
+<p style="text-align: center;">
+	<img alt="Network Device Enrollment Service allows you to obtain certificates for routers or other network devices using the Simple Certificate Enrollment Protocol (SCEP)." src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/AMT-guide21-NDES-done.png" style="width: 721px; height: 300px;"></p>
+<p>
+	Мы получили сгенерированный постоянный пароль (Enrollment Challenge Password), которым можно пользоваться для автоматического получения сертификатов с помощью HTTP и HTTPS (настроим в следующей части) запросов.</p>
+<p>
+	В общем, SCEP-сервер настроен и готов к работе.</p>
+</div></div></div>  </div>
+
+      <footer>
+      <div class="field field-name-field-tags field-type-taxonomy-term-reference field-label-hidden"><div class="field-items"><div class="field-item even" rel="dc:subject"><a href="http://vpro.by/pro/uchebnik-po-intel-amt" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype="">Учебник по Intel AMT</a></div></div></div>      <ul class="links inline"><li class="statistics_counter first last"><span>693 просмотра</span></li>
+</ul>    </footer>
+  
+  <div id="comments" class="comment-wrapper">
+  
+  
+      <section id="comment-form-wrapper">
+      <h2 class="title">Добавить комментарий</h2>
+      <form class="comment-form" action="http://vpro.by/comment/reply/77" method="post" id="comment-form" accept-charset="UTF-8"><div><div class="form-item form-type-textfield form-item-name">
+  <label for="edit-name">Ваше имя </label>
+ <input type="text" id="edit-name" name="name" value="" size="30" maxlength="60" class="form-text" data-cip-id="edit-name">
+</div>
+<div class="form-item form-type-textfield form-item-subject">
+  <label for="edit-subject">Заголовок </label>
+ <input type="text" id="edit-subject" name="subject" value="" size="60" maxlength="64" class="form-text" data-cip-id="edit-subject">
+</div>
+<div class="field-type-text-long field-name-comment-body field-widget-text-textarea form-wrapper" id="edit-comment-body"><div id="comment-body-add-more-wrapper"><div class="text-format-wrapper"><div class="form-item form-type-textarea form-item-comment-body-und-0-value">
+  <label for="edit-comment-body-und-0-value">Comment <span class="form-required" title="Обязательное поле">*</span></label>
+ <div class="form-textarea-wrapper resizable textarea-processed resizable-textarea"><textarea class="text-full form-textarea required" id="edit-comment-body-und-0-value" name="comment_body[und][0][value]" cols="60" rows="5"></textarea><div class="grippie"></div></div>
+</div>
+<fieldset class="filter-wrapper form-wrapper" id="edit-comment-body-und-0-format"><div class="fieldset-wrapper"><div class="filter-help form-wrapper" id="edit-comment-body-und-0-format-help"><p><a href="http://vpro.by/filter/tips" target="_blank">Более подробная информация о текстовых форматах</a></p></div><div class="form-item form-type-select form-item-comment-body-und-0-format">
+  <label for="edit-comment-body-und-0-format--2">Формат текста </label>
+ <select class="filter-list form-select" id="edit-comment-body-und-0-format--2" name="comment_body[und][0][format]" data-cip-id="cIPJQ342845639"><option value="filtered_html" selected="selected">Filtered HTML</option><option value="plain_text">Plain text</option></select>
+</div>
+<div class="filter-guidelines form-wrapper filter-guidelines-processed" id="edit-comment-body-und-0-format-guidelines"><div class="filter-guidelines-item filter-guidelines-filtered_html" style="display: block;"><h3 style="display: none;">Filtered HTML</h3><ul class="tips"><li>Адреса страниц и электронной почты автоматически преобразуются в ссылки.</li><li>Доступные HTML теги: &lt;a&gt; &lt;em&gt; &lt;strong&gt; &lt;cite&gt; &lt;blockquote&gt; &lt;code&gt; &lt;ul&gt; &lt;ol&gt; &lt;li&gt; &lt;dl&gt; &lt;dt&gt; &lt;dd&gt;</li><li>Строки и параграфы переносятся автоматически.</li></ul></div><div class="filter-guidelines-item filter-guidelines-plain_text" style="display: none;"><h3 style="display: none;">Plain text</h3><ul class="tips"><li>HTML-теги не обрабатываются и показываются как обычный текст</li><li>Адреса страниц и электронной почты автоматически преобразуются в ссылки.</li><li>Строки и параграфы переносятся автоматически.</li></ul></div></div></div></fieldset>
+</div>
+</div></div><input type="hidden" name="form_build_id" value="form-t_RT_Kiu_pA4HG5ixpTPLEYWZu7sHYrbnZ7eJ63hYCc">
+<input type="hidden" name="form_id" value="comment_node_article_form">
+<div class="form-item form-type-textfield form-item-trick-question">
+  <label for="edit-trick-question">Сколько букв в слове vPro? (введите цифру) </label>
+ <input type="text" id="edit-trick-question" name="trick_question" value="" size="20" maxlength="128" class="form-text" data-cip-id="edit-trick-question">
+<div class="description">Anti-bot.</div>
+</div>
+<div class="form-actions form-wrapper" id="edit-actions"><input type="submit" id="edit-submit" name="op" value="Сохранить" class="form-submit"><input type="submit" id="edit-preview" name="op" value="Предпросмотр" class="form-submit"></div></div></form>    </section> <!-- /#comment-form-wrapper -->
+  </div> <!-- /#comments -->
+  </div>
+  
+</div> <!-- /.block -->
+</div>
+ <!-- /.region -->
+      </section> <!-- /#main -->
+    </div>
+  
+      
+    </div>
+
+      
+  <div class="clear"></div>
+   
+     <div id="foot">
+     <div class="region region-footer">
+  <div id="block-block-1" class="block block-block">
+
+      
+  <div class="content">
+    <!--LiveInternet logo-->
+<a onmousemove="this.href=&#39;ht&#39; + &#39;tp://&#39; + &#39;www.&#39; + &#39;liveinternet.ru/stat/vpro.by/&#39;;" onfocus="this.href=&#39;ht&#39; + &#39;tp://&#39; + &#39;www.&#39; + &#39;liveinternet.ru/stat/vpro.by/&#39;;" href="" target="_blank" title="LiveInternet">
+<img src="./Настройка SCEP-сервера для автоматического получения AMT сертификатов _ Pro vPro_files/logo" alt="" border="0" height="120" width="88"></a>
+<!--/LiveInternet-->  </div>
+  
+</div> <!-- /.block -->
+</div>
+ <!-- /.region -->
+   </div>
+     </div> 
+  
+
+   
+  <div id="footer">
+          
+    <div id="copyright">
+     <p class="copyright">Copyright © 2010-2016 apple_rom</p>
+    <div class="clear"></div>
+    </div>
+  </div>
+</div>  
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36912884-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+
+</body></html>

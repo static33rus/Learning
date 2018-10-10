@@ -1,0 +1,2 @@
+#!/bin/bash
+qns node-exec 10 python3 testsuite.py

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Test that EcoRouter forwards ICMP traffic.
+#
+# Node 10 pings node 20.
+
+source "${QNS_DIR}"/lib/setup.sh && set_up_test_case
+
+qns node-ip 10 192.168.10.2/24 192.168.10.1
+qns node-ip 20 192.168.20.2/24 192.168.20.1
+qns node-exec 10 ping -OD -c 1 192.168.20.2

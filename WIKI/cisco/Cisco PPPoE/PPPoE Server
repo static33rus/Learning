@@ -1,0 +1,18 @@
+hostname R1-Server
+bba-group pppoe ALTAMEER
+virtual-template 1
+exit
+interface loopback 0
+ip address 10.1.1.1 255.255.0.0
+exit
+ip local pool ALTAMEER 10.1.1.10 10.1.255.254
+username admin priv 15 password admin
+interface virtual-template 1
+ip unnumbered loopback 0
+peer default ip address pool ALTAMEER
+ppp authentication chap callin
+exit
+interface fastEthernet 0/0
+pppoe enable group ALTAMEER
+no shutdown
+

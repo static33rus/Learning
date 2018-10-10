@@ -1,0 +1,35 @@
+#!/bin/bash
+echo Введите название папки с автотестом
+read autotest
+cd /home/m_pavlov/
+rm -rf /home/m_pavlov/autotest
+git clone ssh://git@gitlab.rdp.ru:8022/ecotelecom/autotest.git
+cd ./autotest/
+git remote add myfork ssh://git@gitlab.rdp.ru:8022/m.pavlov/autotest123.git
+git checkout -B $autotest
+git submodule update --init
+git push myfork --delete $autotest
+cp /home/m_pavlov/autotest/.gitlab-ci.yml /home/m_pavlov/Desktop/my_autotests/
+echo Исправьте .gitlab-ci перед заливкой теста
+echo -n "Продолжить скрипт? (y/n) "
+
+read item
+case "$item" in
+    y|Y) echo "Ввели «y», продолжаем..."
+        ;;
+    n|N) echo "Ввели «n», завершаем..."
+        exit 0
+        ;;
+    *) echo "Ввели херню, завершаем..."
+        exit 0
+        ;;
+esac
+cp -r /home/m_pavlov/Desktop/my_autotests/$autotest /home/m_pavlov/autotest/testsuites/
+cp -r /home/m_pavlov/Desktop/my_autotests/.gitlab-ci.yml /home/m_pavlov/autotest/
+git status 
+git add .gitlab-ci.yml testsuites/$autotest/
+git status
+git commit -m "добавлен тест $autotest"
+git push myfork $autotest
+
+

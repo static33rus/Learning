@@ -1,0 +1,17 @@
+set routing-options router-id 172.16.11.101
+set routing-options autonomous-system 65102
+set protocols bgp import FROM-CENTER    - фильтруем входящие префиксы
+set protocols bgp export TO-CENTER      - выбираем то, что будем анонсить
+set protocols bgp group DAPL type external
+set protocols bgp group DAPL neighbor 172.16.11.1 peer-as 43973
+set protocols bgp group DAPL_BACKUP type external
+set protocols bgp group DAPL_BACKUP neighbor 172.17.11.1 peer-as 43973
+set policy-options prefix-list ALBANIA 10.203.190.0/26
+set policy-options prefix-list ALBANIA 10.203.190.64/26
+set policy-options prefix-list ALBANIA 10.203.190.192/26
+set policy-options policy-statement FROM-CENTER term 1 from community DAPL
+set policy-options policy-statement FROM-CENTER term 1 then accept
+set policy-options policy-statement FROM-CENTER term 2 then reject
+set policy-options policy-statement TO-CENTER term 1 from prefix-list ALBANIA
+set policy-options policy-statement TO-CENTER term 1 then accept - 
+set policy-options community DAPL members 43973:43973   - задаем комьюнити

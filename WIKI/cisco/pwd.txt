@@ -1,0 +1,20 @@
+ACS	      - m.pavlov
+		ro0t
+		v.li
+
+79.142.24.129 - m.pavlov Gp152323
+		noc Gp152323	             VPN: group DAPL, pass: mac$1nt0sh!	
+		rutyme Gp152323
+		+ACS
+					
+79.142.24.140 - m.pavlov Gp152323	
+		noc Gp152323
+		
+
+82.212.76.34 - Иордания
+EVPN_ADM
+mac$1nt0sh!
+
+
+vs19.idb.local
+vs23.idb.local - idb\ndes - Gp152323

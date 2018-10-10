@@ -1,0 +1,115 @@
+#!/bin/bash
+
+source "${QNS_DIR}"/lib/setup.sh && set_up_test_case
+
+echo "Start container with docker client"
+qns container-run 10 docker
+qns node-ip 10 192.168.10.2/24 192.168.10.1
+qns container-exec 10 ping -c 2 -W 1 192.168.10.1
+
+echo "Start container with ftp server"
+qns container-run 11 panubo/vsftpd
+qns node-ip 11 192.168.10.3/24 192.168.10.1
+qns container-exec 11 ping -c 2 -i 0.2 -W 1 192.168.10.1
+qns container-exec 11 sh -c "export FTP_USER=ftp; export FTP_PASSWORD=ftp; /entry.sh vsftpd" &
+
+echo "Start target node"
+qns node-ip 20 192.168.20.2/24 192.168.20.1
+qns node-exec 20 ping -c 2 -i 0.2 -W 1 192.168.20.1
+
+echo "Copy all certificates to container with docker client"
+qns container-exec 10 mkdir -p /root/.docker
+qns say "en" --expect "#"
+
+qns say --quiet "show crypto ca export |nopager" --expect "#" > "$(qns container-path 10)/root/.docker/ca.pem"
+qns container-exec 10 cat /root/.docker/ca.pem
+qns container-exec 10 chmod 444 /root/.docker/ca.pem
+
+qns say --quiet "show crypto certificate export admin |nopager" --expect "#" > "$(qns container-path 10)/root/.docker/cert.pem"
+qns container-exec 10 cat /root/.docker/cert.pem
+qns container-exec 10 chmod 440 /root/.docker/cert.pem
+
+qns say --quiet "show crypto key export |nopager" --expect "#" > "$(qns container-path 10)/root/.docker/key.pem"
+qns container-exec 10 cat /root/.docker/key.pem
+qns container-exec 10 chmod 440 /root/.docker/key.pem
+
+qns container-exec 10 sh -c 'echo "192.168.10.1	ecorouter" >> /etc/hosts'
+qns container-exec 10 sh -c 'echo "192.168.10.1	rdprouter" >> /etc/hosts'
+qns container-exec 10 sh -c 'echo "192.168.20.1	imbarouter" >> /etc/hosts'
+qns container-exec 10 cat /etc/hosts
+
+date --iso-8601=seconds
+qns say $'start-shell\nexec date --iso-8601=seconds' --expect "ecorouter#"
+
+echo "Check that we can connect to docker server on router with these certificates"
+qns container-exec 10 docker  --tlsverify \
+                              --tlscacert=/root/.docker/ca.pem \
+                              --tlscert=/root/.docker/cert.pem \
+                              --tlskey=/root/.docker/key.pem \
+                              -H=ecorouter:2376 \
+                              version
+
+qns container-exec 10 docker  --tlsverify \
+                              -H=rdprouter:2376 \
+                              info
+
+qns container-exec 10 docker  --tlsverify \
+                              -H=imbarouter:2376 \
+                              ps
+
+echo "Create network 'net1' for container"
+qns container-exec 10 docker  --tlsverify \
+                              -H=ecorouter:2376 \
+                              network create net1
+
+qns say "show virtual-network container" --expect "Virtual network net1"
+
+echo "Read hbm logs and bypass livecd limitation"
+qns say "start-shell
+sudo journalctl | grep -i hbm
+# Ugly Hack to cheat on configd. It is needed only for livecd iso.
+sudo touch /dev/disk/by-label/extended
+exit" --expect "ecorouter#"
+
+echo "Download test container"
+ip netns exec world curl -L https://files.rdp.ru/misc/alpine.tar -o "$(qns container-path 11)/srv/alpine.tar"
+
+echo "Wait ftp server to start up"
+for i in $(seq 100)
+do
+    if qns container-exec 11 pidof vsftpd
+    then
+        break
+    fi
+    sleep 0.2
+done
+
+echo "Copy container to ecorouter"
+qns say "copy ftp container ftp://ftp:ftp@192.168.10.3/alpine.tar vr default" --expect "ecorouter#"
+
+qns container-exec 10 docker  --tlsverify \
+                              -H=ecorouter:2376 \
+                              images
+
+IMAGE="$(qns container-exec 10 docker  --tlsverify \
+                                       -H=ecorouter:2376 \
+                                       images -q)"
+
+echo "Start container in network 'net1' and ping target node from it"
+qns container-exec 10 docker  --tlsverify \
+                              --tlscacert=/root/.docker/ca.pem \
+                              --tlscert=/root/.docker/cert.pem \
+                              --tlskey=/root/.docker/key.pem \
+                              -H=ecorouter:2376 \
+                              run -i --network net1 "${IMAGE}" sh -c "ping -c 3 192.168.10.3 && \
+                                                                      ping -c 3 192.168.20.2 && \
+                                                                      cat /etc/alpine-release && \
+                                                                      cat /etc/os-release"
+
+echo "Start container in default network and ping target node from it"
+qns container-exec 10 docker  --tlsverify \
+                              -H=ecorouter:2376 \
+                              run -i "${IMAGE}" sh -c "ping -c 3 192.168.10.3 && \
+                                                       ping -c 3 192.168.20.2 && \
+                                                       cat /etc/alpine-release && \
+                                                       cat /etc/os-release"

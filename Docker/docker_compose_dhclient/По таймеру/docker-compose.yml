@@ -1,0 +1,28 @@
+version: '2.2'
+# Есть новая версия 3, там синтаксис другой
+services:
+# Имя сервиса задаю любое
+  dhcp:
+#Имя раннее созданного докера, можно создать прям здесь используя параметр build (должен быть DockerFile в папке)
+#    image: dhcptest
+    build: .
+#    container_name: dhcp
+    tty: true
+
+# После запуска контейнера выполнится команда dhclient с привелигированными правами, а интерфейсы будут в сети network1
+#    command: "at -f hz.sh now + 1 minute"
+    privileged: true
+    networks:
+      - network1
+#Количество контейнеров
+    scale: 100
+
+# А этот синтаксис уже для 3 версии
+#    deploy:
+#      replicas: 3
+
+# Здесь говорим, что используем ранее созданную docker network (external) с именем docker_qwbridge
+networks:
+  network1:
+    external: true
+    name: docker_gwbridge

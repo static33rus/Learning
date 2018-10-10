@@ -1,0 +1,16 @@
+-------------------radius:
+ifconfig eth0 3.3.3.2 netmask 255.255.255.0
+cd /etc/raddb/
+rm users 
+rm clients.conf 
+echo 'client 3.3.3.0/24 {' > clients.conf
+echo '        secret          = 12121212' >> clients.conf
+echo '}' >> clients.conf
+echo 'DEFAULT Auth-Type := Accept' > /etc/raddb/mods-config/files/authorize
+echo VENDOR        RDP        45555 > /etc/raddb/dictionary
+echo BEGIN-VENDOR RDP >> /etc/raddb/dictionary
+echo ATTRIBUTE    SERVICE_NAME        250    string >> /etc/raddb/dictionary
+echo END-VENDOR    RDP >> /etc/raddb/dictionary
+
+radiusd
+

@@ -1,0 +1,84 @@
+#!/bin/bash
+
+source "${QNS_DIR}"/lib/setup.sh && set_up_test_case
+set -o nounset
+
+# Retry command until it succeeds.
+# Arguments:
+# - <max_tries>
+# - <cmd>...
+function retry_command
+{
+    declare -r -i max_tries="$1"
+    shift
+
+    declare -i i
+
+    for ((i = 0; i < max_tries; i++))
+    do
+        if [[ i -ne 0 ]]
+        then
+            sleep 1
+        fi
+
+        if "$@"
+        then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+function start_pppd
+{
+    declare -a args
+
+    args+=("pty")
+    args+=("pppoe -I veth0 -m 1412")
+    args+=("nodetach")
+    args+=("debug")
+    args+=("noipdefault")
+    args+=("defaultroute")
+    args+=("noauth")
+
+    qns node-exec 10 pppd "${args[@]}" &
+}
+
+function main
+{
+    qns node-exec 10 \
+        tcpdump \
+        --packet-buffered \
+        --immediate-mode \
+        --interface veth0 \
+        -w packets.pcap &
+
+    qns node-ip 20 192.168.20.2/24 192.168.20.1
+    start_pppd
+
+    retry_command 10 \
+        qns node-exec 10 ping -OD -c 1 192.168.20.2
+
+    qns say "enable" \
+        --expect "ecorouter#"
+
+    qns say "show subscribers bmi.1 | nopager" \
+        --expect "192.168.10.2"
+
+    qns say "clear subscribers bmi.1 all" \
+        --expect "ecorouter#"
+
+    echo "Packets must not pass through: admin has closed the session"
+    ! qns node-exec 10 ping -OD -c 1 192.168.20.2
+
+    echo "Find Termination Request using ppp.code field"
+    tshark -r packets.pcap -Y "ppp.code == 5" |
+        grep "Termination Request"
+
+    echo "Find PADT using pppoe.code field"
+    tshark -r packets.pcap -Y "pppoe.code == 0xa7" |
+        grep "PADT"
+}
+
+main

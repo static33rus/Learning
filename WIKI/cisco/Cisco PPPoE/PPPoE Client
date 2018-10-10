@@ -1,0 +1,19 @@
+
+interface FastEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ pppoe enable
+ pppoe-client dial-pool-number 1
+
+interface Dialer1
+ mtu 1492
+ ip address negotiated
+ encapsulation ppp
+ dialer pool 1
+ dialer-group 1
+ ppp chap password 0 R2
+
+ip route 0.0.0.0 0.0.0.0 Dialer1
+
+

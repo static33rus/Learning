@@ -1,0 +1,21 @@
+#!/usr/bin/python3
+
+import os
+import time
+from pppoe_proto.configure import *
+
+#######     Запускаем радиус    ####################
+qns_call('\nqns container-run 20 hub.rdp.ru/freeradius')
+configure_radius(20,'3.3.3.2')
+qns_call("\nqns container-exec 20 radiusd -X >./container_20.img/rootfs/output&")
+qns_call("\nqns container-exec 20 ps ax")
+qns_call('\nqns node-exec 10 python3 script.py')
+qns_call("\nqns container-exec 20 pkill -9 radiusd")
+
+#######     Проверяем наличие атрибута calling-station-id и компании в requeste    ####################
+print("Проверяем наличие атрибутов в auth request")
+qns_call("\nqns container-exec 20 cat output | grep '(0)   Calling-Station-Id ='")
+qns_call("\nqns container-exec 20 cat output | grep '(0)   Acct-Session-Id ='")
+qns_call("\nqns container-exec 20 cat output | grep '(0)   Service-Type = Framed-User'")
+qns_call("\nqns container-exec 20 cat output | grep '(0)   Framed-Protocol = PPP'")
+qns_call("\nqns container-exec 20 cat output | grep '(0)   NAS-Port-Type = Ethernet'")

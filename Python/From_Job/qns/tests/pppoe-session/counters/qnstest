@@ -1,0 +1,99 @@
+#!/bin/bash
+
+source "${QNS_DIR}"/lib/setup.sh && set_up_test_case
+set -o nounset
+
+# Retry command until it succeeds.
+# Arguments:
+# - <max_tries>
+# - <cmd>...
+function retry_command
+{
+    declare -r -i max_tries="$1"
+    shift
+
+    declare -i i
+
+    for ((i = 0; i < max_tries; i++))
+    do
+        if [[ i -ne 0 ]]
+        then
+            sleep 1
+        fi
+
+        if "$@"
+        then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+function start_pppd
+{
+    declare -a args
+
+    args+=("pty")
+    args+=("pppoe -I veth0 -m 1412")
+    args+=("nodetach")
+    args+=("debug")
+    args+=("noipdefault")
+    args+=("defaultroute")
+    args+=("noauth")
+
+    qns node-exec 10 pppd "${args[@]}" &
+}
+
+function main
+{
+    qns node-ip 20 192.168.20.2/24 192.168.20.1
+    start_pppd
+
+    retry_command 10 \
+        qns node-exec 10 ping -OD -c 1 192.168.20.2
+
+    subscriber_ip="$(qns say --quiet "show subscribers bmi.1 | nopager" \
+        --expect "ecorouter>" |
+        grep --only-matching '192\.168\.10\.[[:digit:]]')"
+
+    echo "Found subscriber with IP address ${subscriber_ip}"
+
+    qns say "show subscribers bmi.1 ${subscriber_ip} | nopager" \
+        --expect "ecorouter>"
+
+    qns say "enable" --expect "ecorouter#"
+    qns say "clear counters subscribers bmi.1 all" --expect "ecorouter#"
+    qns say "show counters subscribers bmi.1 ${subscriber_ip} | nopager" --expect "ecorouter#"
+    qns say "disable" --expect "ecorouter>"
+
+    qns node-exec 10 ping -OD -c 1 192.168.20.2
+
+    echo "Adding filter to drop IP traffic from node 20"
+    qns node-exec 20 nft add table table0
+    qns node-exec 20 nft add chain table0 chain0 '{ type filter hook output priority 0; }'
+    qns node-exec 20 nft add rule table0 chain0 drop
+
+    echo "Expecting no ICMP Echo response"
+    ! qns node-exec 10 ping -OD -c 1 -w 1 192.168.20.2
+
+    show_subscribers_output="$(qns say --quiet "show subscribers bmi.1 ${subscriber_ip} | nopager" \
+        --expect "ecorouter>")"
+
+    echo "Detailed info about subscriber ${subscriber_ip}:"
+    echo "$show_subscribers_output"
+
+    wan_pkts=$(sed --quiet '/wan pkts:/ { s/wan pkts: //; p }' <<< "$show_subscribers_output")
+    lan_pkts=$(sed --quiet '/lan pkts:/ { s/lan pkts: //; p }' <<< "$show_subscribers_output")
+
+    if [[ $wan_pkts -eq 2 && $lan_pkts -eq 1 ]]
+    then
+        echo "Packet counters for subscriber are OK."
+    else
+        echo "Bad packet counters for subscriber."
+        echo "Expecting to have two packets (ICMP Echo requests) in wan"
+        echo "direction and one packet (ICMP echo reply) in lan direction."
+    fi
+}
+
+main

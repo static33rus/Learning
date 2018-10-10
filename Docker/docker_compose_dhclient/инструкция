@@ -1,0 +1,10 @@
+1) Установить Docker 
+2) Скопировать docker-compose.bin в /usr/local/bin/
+3) Изменить в docker-compose.yml раздел volumes, scale
+4) Создать docker network'ом новую сеть и bridge
+5) Указать сеть в docker-compose.yml
+6) Ввести команды 
+export COMPOSE_HTTP_TIMEOUT=300
+export DOCKER_CLIENT_TIMEOUT=300
+7) Запустить контейнеры командой docker-compose up -d --build
+9) Уздалить правила в iptables (iptables -L, iptables -F)

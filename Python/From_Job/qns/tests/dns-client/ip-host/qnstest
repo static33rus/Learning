@@ -1,0 +1,36 @@
+#!/bin/bash
+
+source "${QNS_DIR}"/lib/setup.sh && set_up_test_case
+
+qns node-ip 10 192.168.10.2/24 192.168.10.1
+qns node-ip 20 192.168.20.2/24 192.168.20.1
+qns node-exec 10 ping -OD -c 1 192.168.20.2
+
+qns say "en" --expect "#"
+
+qns say "ping
+
+net10
+
+1
+
+
+
+
+" --expect "icmp_seq=1"
+
+qns say "ping
+
+net20
+
+1
+
+
+
+
+" --expect "icmp_seq=1"
+
+qns say "ping
+
+net30
+" --expect "% Bad IP address or hostname"

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Test that EcoRouter management interface is up.
+#
+# Node 00 pings management interface.
+
+source "${QNS_DIR}"/lib/setup.sh && set_up_test_case
+
+qns node-ip 00 192.168.255.2/24
+qns node-exec 00 ping -OD -c 1 192.168.255.1

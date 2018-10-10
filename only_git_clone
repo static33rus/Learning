@@ -1,0 +1,16 @@
+#!/bin/sh
+cd /home/m_pavlov/
+rm -rf /home/m_pavlov/autotest
+git clone ssh://git@gitlab.rdp.ru:8022/ecotelecom/autotest.git
+cd ./autotest/
+git remote add myfork ssh://git@gitlab.rdp.ru:8022/m.pavlov/autotest.git
+#git remote -v
+#git status 
+#git log
+git checkout -B IPOE
+# git status 
+# git add .gitlab-ci.yml testsuites/timeloadtest/
+# git status
+# git commit -m "TIMELOAD TEST ADDED"
+# git push myfork timeload 
+ git submodule update --init

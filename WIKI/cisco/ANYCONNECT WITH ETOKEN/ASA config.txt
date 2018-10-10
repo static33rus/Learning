@@ -1,0 +1,69 @@
+ip local pool ANYCONNECT-POOL2 10.10.250.33-10.10.250.62 mask 255.255.255.0
+ip local pool ANYCONNECT-POOL 10.10.250.10-10.10.250.29 mask 255.255.255.0
+aaa-server RADIUS-DC3 protocol radius
+aaa-server RADIUS-DC3 (ROUTING) host 10.10.14.19
+ key *****
+ crypto ca certificate map TEST 10
+ subject-name attr ou co admins
+crypto ca certificate map TEST 20
+ subject-name attr ou co devel
+crypto ca certificate map TEST 30
+ subject-name ne admins
+ subject-name ne devel
+ webvpn
+ enable outside
+ anyconnect-essentials
+ anyconnect image disk0:/anyconnect-win-3.1.05160-k9.pkg 1
+ anyconnect image disk0:/anyconnect-macosx-i386-3.1.05160-k9.pkg 2
+ anyconnect image disk0:/anyconnect-linux-64-3.1.05160-k9.pkg 3
+ anyconnect enable
+ tunnel-group-list enable
+ certificate-group-map TEST 10 ANYCONNECT-GROUP
+ certificate-group-map TEST 20 DEVEL
+ certificate-group-map TEST 30 DROP
+group-policy ADMIN_POLICY internal
+group-policy ADMIN_POLICY attributes
+ dns-server value 10.10.14.19 10.10.14.20
+ vpn-simultaneous-logins 1
+ vpn-idle-timeout 120
+ vpn-session-timeout 300
+ vpn-tunnel-protocol l2tp-ipsec ssl-client 
+ split-tunnel-policy tunnelspecified
+ split-tunnel-network-list value VPN_ROUTES
+ default-domain value idb.local
+ webvpn
+  always-on-vpn profile-setting
+ group-policy VPN-DEVEL internal
+group-policy VPN-DEVEL attributes
+ dns-server value 10.10.14.19 10.10.14.20
+ vpn-simultaneous-logins 1
+ vpn-idle-timeout 120
+ vpn-session-timeout 300
+ vpn-filter value VPN-DEVEL
+ vpn-tunnel-protocol l2tp-ipsec ssl-client 
+ split-tunnel-policy tunnelspecified
+ split-tunnel-network-list value VPN_ROUTES
+ default-domain value idb.local
+ webvpn
+  always-on-vpn profile-setting
+   authentication ms-chap-v2
+tunnel-group ANYCONNECT-GROUP type remote-access
+tunnel-group ANYCONNECT-GROUP general-attributes
+ address-pool ANYCONNECT-POOL
+ authentication-server-group RADIUS-DC3
+ default-group-policy ADMIN_POLICY
+tunnel-group ANYCONNECT-GROUP webvpn-attributes
+ authentication aaa certificate
+ pre-fill-username ssl-client
+ group-alias ANYCONNECT enable
+tunnel-group DEVEL type remote-access
+tunnel-group DEVEL general-attributes
+ address-pool ANYCONNECT-POOL2
+ authentication-server-group RADIUS-DC3
+ default-group-policy ADMIN_POLICY
+tunnel-group DEVEL webvpn-attributes
+ authentication aaa certificate
+ pre-fill-username ssl-client
+tunnel-group DROP type remote-access
+
+ 

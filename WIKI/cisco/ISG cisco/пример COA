@@ -1,0 +1,21 @@
+/bin/echo "User-Name='cisco',User-Password='cisco',cisco-avpair='su
+bscriber:command=account-logon',Cisco-Account-Info='S1.1.1.10'" | radclient -x 3
+.3.3.1 coa secret
+
+
+
+
+
+echo "User-Name = test" | /usr/local/bin/radclient localhost:1812 auth s3cr3t
+echo "User-Name=test,User-Password=mypass,Framed-Protocol=PPP " | /usr/local/bin/radclient localhost:1812 auth s3cr3t
+echo "Message-Authenticator = 0x00" | /usr/local/bin/radclient localhost:1812 auth s3cr3t
+
+
+
+
+
+# echo "Acct-Session-Id=D91FE8E51802097" > packet.txt
+# echo "User-Name=somebody" >> packet.txt
+# echo "NAS-IP-Address=10.0.0.1" >> packet.txt
+
+# cat packet.txt | radclient -x 10.0.0.1:3799 disconnect ''secret''

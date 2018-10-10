@@ -1,0 +1,11 @@
+version: '2'
+services:
+  confexp:
+    image: hub.rdp.ru/confexp:latest
+    build: .
+    container_name: confexp
+    dns:
+      - 10.210.10.98
+      - 10.210.10.1
+    extra_hosts:
+      - "ftp.rdp.ru:10.210.10.98"

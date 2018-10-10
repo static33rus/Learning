@@ -1,0 +1,77 @@
+#!/bin/bash
+
+source "${QNS_DIR}"/lib/setup.sh && set_up_test_case
+set -o nounset
+
+# Retry command until it succeeds.
+# Arguments:
+# - <max_tries>
+# - <cmd>...
+function retry_command
+{
+    declare -r -i max_tries="$1"
+    shift
+
+    declare -i i
+
+    for ((i = 0; i < max_tries; i++))
+    do
+        if [[ i -ne 0 ]]
+        then
+            sleep 1
+        fi
+
+        if "$@"
+        then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+function start_pppd
+{
+    declare -a args
+
+    args+=("pty")
+    args+=("pppoe -I veth0 -m 1412")
+    args+=("nodetach")
+    args+=("debug")
+    args+=("noipdefault")
+    args+=("defaultroute")
+    args+=("noauth")
+
+    qns node-exec 10 pppd "${args[@]}" &
+}
+
+function main
+{
+    qns node-exec 10 \
+        tcpdump \
+        --packet-buffered \
+        --immediate-mode \
+        --interface veth0 \
+        -w packets.pcap &
+
+    qns node-ip 20 192.168.20.2/24 192.168.20.1
+
+    qns say "enable" --expect "#"
+    qns say "configure terminal" --expect "#"
+    qns say "interface bmi.1" --expect "#"
+    qns say "ip mtu 800" --expect "#"
+
+    start_pppd
+
+    retry_command 10 \
+        qns node-exec 10 ping -OD -c 1 192.168.20.2
+
+    echo "Large ICMP packets must not pass through"
+    ! qns node-exec 10 ping -OD -c 1 -s 900 192.168.20.2
+
+    echo "Find LCP packet with specific MRU"
+    tshark -r packets.pcap -Y "lcp.opt.mru eq 792" |
+        grep "LCP"
+}
+
+main

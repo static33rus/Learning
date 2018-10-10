@@ -1,0 +1,145 @@
+upgrade fpd auto
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+aaa new-model
+!
+!
+aaa authentication ppp default group radius
+!
+!
+!         
+!
+!
+aaa session-id common
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!         
+!
+username admin password 0 admin
+!
+redundancy
+!
+!
+ip tcp synwait-time 5
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+bba-group pppoe ALTAMEER
+ virtual-template 1
+ sessions per-vc limit 65000
+ sessions per-mac limit 65000
+ sessions per-vlan limit 65000
+ sessions pre-auth limit ignore
+!         
+!
+interface Loopback0
+ ip address 10.1.0.1 255.255.0.0
+!
+interface FastEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ pppoe enable group ALTAMEER
+ keepalive 8000
+!
+interface FastEthernet0/1
+ ip address 3.3.3.1 255.255.0.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Virtual-Template1
+ ip unnumbered Loopback0
+ peer default ip address pool ALTAMEER
+ keepalive 32000
+ ppp authentication ms-chap-v2
+!
+ip local pool ALTAMEER 10.1.1.10 10.1.255.254
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+!
+no cdp log mismatch duplex
+!
+!
+!
+!         
+radius server hz
+ address ipv4 3.3.3.2 auth-port 1812 acct-port 1646
+ key 12121212
+!
+!
+control-plane
+!
+!
+!
+mgcp profile default
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ transport input all
+!
+!
+end
+

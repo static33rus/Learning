@@ -1,0 +1,50 @@
+#!/bin/bash
+
+source "${QNS_DIR}"/lib/setup.sh && set_up_test_case
+
+qns say "en" --expect "#"
+
+qns say "show hosts |nopager" --expect "#"
+qns say "show hosts |nopager" --expect "#" | grep "Default domain" | grep "tackleberry"
+qns say "show hosts |nopager" --expect "#" | grep "Additional Domain" | grep "hightower.ru"
+qns say "show hosts |nopager" --expect "#" | grep "Name Servers" | grep "192.168.20.3 8.8.8.8 8.8.8.4"
+qns say "show hosts |nopager" --expect "#" | grep "net20" | grep "192.168.20.2"
+qns say "show hosts |nopager" --expect "#" | grep "DNS lookup is enabled"
+
+qns say "show run |nopager" --expect "#"
+qns say "show run |nopager" --expect "#" | grep "ip name-server 192.168.20.3"
+
+qns say "show run dns |nopager" --expect "#"
+qns say "show run dns |nopager" --expect "#" | grep "ip name-server 192.168.20.3"
+
+qns say "conf t" --expect "config"
+qns say "no ip domain-lookup" --expect "config"
+qns say "exit" --expect "#"
+
+qns say "show hosts |nopager" --expect "#"
+qns say "show hosts |nopager" --expect "#" | grep "DNS lookup is disabled"
+
+qns say "conf t" --expect "config"
+! qns say "debug dns client" --expect "config" | grep "%"
+qns say "do show run |nopager" --expect "#"
+qns say "do show run |nopager" --expect "#" | grep "debug dns client" ||: #Bug
+
+! qns say "no ip domain-lookup" --expect "config" | grep "%"
+! qns say "no ip name-server 192.168.20.3" --expect "config" | grep "%"
+! qns say "no ip name-server 8.8.8.8" --expect "config" | grep "%"
+! qns say "no ip name-server 8.8.8.4" --expect "config" | grep "%"
+! qns say "no ip host net10 192.168.10.2" --expect "config" | grep "%"
+! qns say "no ip host net20 192.168.20.2" --expect "config" | grep "%"
+! qns say "no ip domain-name tackleberry" --expect "config" | grep "%"
+! qns say "no ip domain-list hightower.ru" --expect "config" | grep "%"
+! qns say "no ip domain-list mahoney.ru" --expect "config" | grep "%"
+! qns say "no debug dns client" --expect "config" | grep "%"
+qns say "exit" --expect "#"
+
+qns say "show run |nopager" --expect "#"
+! qns say "show run |nopager" --expect "#" | grep "ip domain-lookup"
+! qns say "show run |nopager" --expect "#" | grep "ip name-server"
+! qns say "show run |nopager" --expect "#" | grep "ip host"
+! qns say "show run |nopager" --expect "#" | grep "ip domain-name"
+! qns say "show run |nopager" --expect "#" | grep "ip domain-list"
+! qns say "show run |nopager" --expect "#" | grep "debug dns client"

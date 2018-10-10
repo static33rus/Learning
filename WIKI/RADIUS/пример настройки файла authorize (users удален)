@@ -1,0 +1,10 @@
+########### == проверить атрибут на наличие в реквесте, = проверить на наличие и добавить его в accept, := - добавить атрибут в accept
+########### Данный пример разрешит доступ пользователю admin, c паролем admin и атрибутом framed-user и отправит accept с атрибутами service-type,framed-ip,framed-ip-netmask 
+admin	Cleartext-Password := "admin"
+	Service-Type = Framed-User,
+	Framed-Protocol == PPP,
+	Framed-IP-Address := 172.16.3.33,
+	Framed-IP-Netmask := 255.255.255.0
+
+
+

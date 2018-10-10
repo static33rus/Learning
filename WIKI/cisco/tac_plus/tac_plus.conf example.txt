@@ -1,0 +1,40 @@
+# Set where to send accounting records
+accounting file = /var/log/tac_plus/tac_plus.acct
+# Encryption key
+key = MishanyaBestOfTheBest
+# Groups
+group = admin {
+    default service = permit
+    service = exec {
+    priv-lvl = 15
+    }
+}
+group = service {
+    default service = deny
+    service = exec {
+    priv-lvl = 15
+    }
+
+}
+user = m.pavlov {
+    member = admin
+    login = cleartext Gp152323
+}
+user = duty {
+    member = service
+    login = cleartext cisco
+    cmd = "configure" {
+        permit .*
+        }
+    cmd = interface {
+        permit .*
+        }
+    cmd = "shutdown" {
+        permit .*
+        }
+    cmd = no {
+        permit .*
+        }
+    cmd = configure {
+        deny .*
+       
